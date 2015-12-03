@@ -6,12 +6,11 @@ setup(name='PAMMysqlTools',
       author='Christopher Perrin',
       author_email='perrin@uni-trier.de',
       packages=find_packages(),
-      install_requires=['pymysql','click'],
+      install_requires=['pymysql', 'click'],
       entry_points={
-            'console_scripts': [
-                'myuseradd=pammymanager.scripts:useradd',
-                'myuserdel=pammymanager.scripts:userdel',
-                'myusermod=pammymanager.scripts:usermod',
-            ]
-        }
-      )
+          'console_scripts': [
+              'myuseradd=pammymanager.scripts:useradd',
+              'myuserdel=pammymanager.scripts:userdel',
+              'myusermod=pammymanager.scripts:usermod',
+          ]
+      })

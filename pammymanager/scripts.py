@@ -1,9 +1,9 @@
 import gettext
 import grp
 import pwd
+import syslog
 
 import click
-import syslog
 
 from pammymanager.manager import UserManager
 
@@ -50,18 +50,21 @@ def useradd(basedir, comment, home_dir, expiredate, inactive, gid, groups, skel,
     pm.adduser(username=login, gid=gid, uid=uid, gecos=comment, homedir=home_dir)
 
 
+# TODO: Implement deleting users
 def userdel():
     pass
 
 
+# TODO: Implement modifying users
 def usermod():
     pass
 
 
-def groupadd():
+# TODO: Implement adding groups
+def groupadd(gid):
     pass
 
-
+# TODO: Implement creating of homedir
 def _create_home(path):
     pass
 
@@ -121,6 +124,7 @@ def _find_new_uid(sysuser, preferred_uid=None):
                 return uid
 
     syslog.syslog(syslog.LOG_WARNING, "no more available UID on the system")
+    # TODO: Raise meaningful exception
 
 
 def _find_new_gid(sysuser, preferred_gid=None):
@@ -153,3 +157,4 @@ def _find_new_gid(sysuser, preferred_gid=None):
                 return uid
 
     syslog.syslog(syslog.LOG_WARNING, "no more available GID on the system")
+    # TODO: Raise meaningful exception
