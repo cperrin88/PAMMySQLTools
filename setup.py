@@ -12,5 +12,6 @@ setup(name='PAMMysqlTools',
               'myuseradd=pammymanager.scripts:useradd',
               'myuserdel=pammymanager.scripts:userdel',
               'myusermod=pammymanager.scripts:usermod',
+              'mygroupadd=pammymanager.scripts:groupadd',
           ]
       })
