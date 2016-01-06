@@ -1,0 +1,2 @@
+recursive-include pammymanager/locales *.mo
+recursive-include conf *

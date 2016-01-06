@@ -8,14 +8,14 @@ import syslog
 import __main__
 import click
 import grp
-from pammymanager.helpers import get_config, find_new_uid, find_new_gid, connect_db, get_useradd_conf, get_defs, \
+from pammymanager import get_config, find_new_uid, find_new_gid, connect_db, get_useradd_conf, get_defs, \
     create_home, get_gid, get_uid
-from pammymanager.manager import UserManager, GroupListManager, GroupManager
-from pammymanager.validators import keyvalue, date, list
+from pammymanager import UserManager, GroupListManager, GroupManager
+from pammymanager import keyvalue, date, list
 
 progname = os.path.basename(__main__.__file__)
 
-_ = gettext.gettext
+gettext.install('default', os.path.join(os.path.dirname(os.path.realpath(__file__)), "locales"))
 syslog.openlog(progname)
 
 # The reference date for the timestamps
@@ -27,27 +27,30 @@ def cli():
     pass
 
 
-# TODO: Translate all strings
 @click.command()
-@click.option('-b', '--basedir', help=_('base directory for the home directory of the new account'))
-@click.option('-c', '--comment', help=_('GECOS field of the new account'))
-@click.option('-d', '--home-dir', help=_('home directory of the new account'))
-@click.option('-e', '--expiredate', type=date, help=_('expiration date of the new account'))
-@click.option('-f', '--inactive', type=int, help=_('password inactivity period of the new account'))
-@click.option('-g', '--gid', type=int, help=_('name or ID of the primary group of the new account'))
-@click.option('-G', '--groups', type=list, help=_('list of supplementary groups of the new account'))
-@click.option('-k', '--skel', help=_('use this alternative skeleton directory'))
-@click.option('-K', '--key', type=keyvalue, multiple=True, help=_('override /etc/login.defs defaults'))
+@click.option('-b', '--basedir', help=_('base directory for the home directory of the new account'),
+              metavar=_('BASE_DIR'))
+@click.option('-c', '--comment', help=_('GECOS field of the new account'), metavar=_('COMMENT'))
+@click.option('-d', '--home-dir', help=_('home directory of the new account'), metavar=_('HOME_DIR'))
+@click.option('-e', '--expiredate', type=date, help=_('expiration date of the new account'), metavar=_('EXPIRE_DATE'))
+@click.option('-f', '--inactive', type=int, help=_('password inactivity period of the new account'),
+              metavar=_('INACTIVE'))
+@click.option('-g', '--gid', type=int, help=_('name or ID of the primary group of the new account'), metavar=_('GROUP'))
+@click.option('-G', '--groups', type=list, help=_('list of supplementary groups of the new account'),
+              metavar=_('GROUPS'))
+@click.option('-k', '--skel', help=_('use this alternative skeleton directory'), metavar=_('SKEL_DIR'))
+@click.option('-K', '--key', type=keyvalue, multiple=True, help=_('override /etc/login.defs defaults'),
+              metavar=_('KEY=VALUE'))
 @click.option('-M/-m', '--no-create-home/--create-home', help=_("do not create the user's home directory"))
 @click.option('-U/-N', '--no-user-group/--user-group',
               help=_('do not create a group with the same name as the user'))
 @click.option('-o', '--non-unique', is_flag=True,
               help=_('allow to create users with duplicate (non-unique) UID'))
-@click.option('-p', '--password', help=_('encrypted password of the new account'))
+@click.option('-p', '--password', help=_('encrypted password of the new account'), metavar=_('PASSWORD'))
 @click.option('-r', '--system', is_flag=True, help=_('create a system account'))
-@click.option('-s', '--shell', help=_('login shell of the new account'))
-@click.option('-u', '--uid', type=int, help=_('user ID of the new account'))
-@click.option('--config', help=_('path to the config file for this tool'))
+@click.option('-s', '--shell', help=_('login shell of the new account'), metavar=_('SHELL'))
+@click.option('-u', '--uid', type=int, help=_('user ID of the new account'), metavar=_('UID'))
+@click.option('--config', help=_('path to the config file for this tool'), metavar=_('CONF_PATH'))
 @click.argument('login')
 @click.pass_context
 def useradd(ctx, basedir, comment, home_dir, expiredate, inactive, gid, groups, skel, key, no_create_home,
@@ -94,6 +97,8 @@ def useradd(ctx, basedir, comment, home_dir, expiredate, inactive, gid, groups, 
 
         except KeyError:
             gid = find_new_gid(sysuser=system, preferred_gid=uid)
+    else:
+        gid = get_gid(gid)
 
     if expiredate:
         expiredate = (expiredate - REFDATE).days
@@ -107,7 +112,7 @@ def useradd(ctx, basedir, comment, home_dir, expiredate, inactive, gid, groups, 
             print(_("Error: Insufficient permissions to create home dir"))
             exit(1)
         except FileExistsError:
-            print(_('Error: Directory "%s" already exists' % home_dir))
+            print(_('Error: Directory "%s" already exists') % home_dir)
             exit(1)
 
     lastchg = datetime.date.today() - REFDATE
@@ -125,7 +130,7 @@ def useradd(ctx, basedir, comment, home_dir, expiredate, inactive, gid, groups, 
             try:
                 glm.addgroupuser(login, get_gid(g))
             except KeyError:
-                print(_("Warning: Can't find group {group}".format(group=g)))
+                print(_("Warning: Can't find group {group}").format(group=g))
 
     dbs.commit()
     dbs.close()
@@ -181,35 +186,36 @@ def userdel(force, remove, config, login):
     try:
         gm.delgroup(gid=str(gr.gr_gid))
     except ValueError:
-        print(_('Error: Primary group "{group}" of user is empty but not in Database. Try "groupdel {group}"'.format(
-                group=gr.gr_gid)))
+        print(_('Warning: Primary group "{group}" of user is empty but not in Database. Try "groupdel {group}"').format(
+                group=gr.gr_gid))
         exit(1)
 
     dbs.commit()
     dbs.close()
 
 
-# FIXME: Help strings wrong
 @click.command()
-@click.option('-c', '--comment', help=_('GECOS field of the new account'))
-@click.option('-d', '--home-dir', help=_('home directory of the new account'))
-@click.option('-e', '--expiredate', type=date, help=_('expiration date of the new account'))
-@click.option('-f', '--inactive', type=int, help=_('password inactivity period of the new account'))
-@click.option('-g', '--gid', type=int, help=_('name or ID of the primary group of the new account'))
-@click.option('-G', '--groups', type=list, help=_('list of supplementary groups of the new account'))
+@click.option('-c', '--comment', help=_('new value of the GECOS field'), metavar=_('COMMENT'))
+@click.option('-d', '--home-dir', help=_('new home directory for the user account'), metavar=_('HOME_DIR'))
+@click.option('-e', '--expiredate', type=date, help=_('set account expiration date to EXPIRE_DATE'),
+              metavar=_('EXPIRE_DATE'))
+@click.option('-f', '--inactive', type=int, help=_('set password inactive after expiration to INACTIVE'),
+              metavar=_('INACTIVE'))
+@click.option('-g', '--gid', type=int, help=_('force use GROUP as new primary group'), metavar=_('GROUP'))
+@click.option('-G', '--groups', type=list, help=_('new list of supplementary GROUPS'), metavar=_('GROUPS'))
 @click.option('-a', '--append', is_flag=True,
               help=_('append the user to the supplemental GROUPS mentioned by the -G option without removing him/her '
-                     'from other groups'))
-@click.option('-l', '--login', 'login_new', help=_('new value of the login name'))
+                     'from other groups'), metavar=_('GROUPS'))
+@click.option('-l', '--login', 'login_new', help=_('new value of the login name'), metavar=_('NEW_LOGIN'))
 @click.option('-L', '--lock', is_flag=True, help=_('lock the user account'))
 @click.option('-m', '--move-home', default=True, is_flag=True,
               help=_('move contents of the home directory to the new location (use only with -d)'))
-@click.option('-o', '--non-unique', is_flag=True, help=_('allow to create users with duplicate (non-unique) UID'))
-@click.option('-p', '--password', help=_('encrypted password of the new account'))
-@click.option('-s', '--shell', help=_('login shell of the new account'))
-@click.option('-u', '--uid', type=int, help=_('user ID of the new account'))
+@click.option('-o', '--non-unique', is_flag=True, help=_('allow using duplicate (non-unique) UID'))
+@click.option('-p', '--password', help=_('use encrypted password for the new password'), metavar=_('PASSWORD'))
+@click.option('-s', '--shell', help=_('new login shell for the user account'), metavar=_('SHELL'))
+@click.option('-u', '--uid', type=int, help=_('new UID for the user account'), metavar=_('UID'))
 @click.option('-U', '--unlock', is_flag=True, help=_('unlock the user account'))
-@click.option('--config', help=_('path to the config file for this tool'))
+@click.option('--config', help=_('path to the config file for this tool'), metavar=_('CONF_PATH'))
 @click.argument('login')
 def usermod(comment, home_dir, expiredate, inactive, gid, groups, append, login_new, lock, move_home, non_unique,
             password, shell, uid, unlock, config, login):
@@ -231,6 +237,8 @@ def usermod(comment, home_dir, expiredate, inactive, gid, groups, append, login_
 
     if expiredate:
         expiredate = (expiredate - REFDATE).days
+
+    gid = get_gid(gid)
 
     dbs = connect_db(conf)
     pm = UserManager(conf, dbs)
@@ -278,7 +286,7 @@ def usermod(comment, home_dir, expiredate, inactive, gid, groups, append, login_
                 try:
                     glm.addgroupuser(login, get_gid(group))
                 except KeyError:
-                    print(_("Warning: Can't find group {group}".format(group=group)))
+                    print(_("Warning: Can't find group {group}").format(group=group))
         else:
             db_groups = glm.getgroupsforuser(login)
             for group in groups:
@@ -301,12 +309,13 @@ def usermod(comment, home_dir, expiredate, inactive, gid, groups, append, login_
 @click.command()
 @click.option('-f', '--force', is_flag=True,
               help=_('exit successfully if the group already exists, and cancel -g if the GID is already used'))
-@click.option('-g', '--gid', type=int, help=_('use GID for the new group'))
-@click.option('-K', '--key', type=keyvalue, multiple=True, help=_('override /etc/login.defs defaults'))
+@click.option('-g', '--gid', type=int, help=_('use GID for the new group'), metavar=_('GID'))
+@click.option('-K', '--key', type=keyvalue, multiple=True, help=_('override /etc/login.defs defaults'),
+              metavar=_('KEY=VALUE'))
 @click.option('-o', '--non-unique', help=_('allow to create groups with duplicate (non-unique) GID'))
-@click.option('-p', '--password', help=_('encrypted password of the new group'))
+@click.option('-p', '--password', help=_('encrypted password of the new group'), metavar=_('PASSWORD'))
 @click.option('-r', '--system', is_flag=True, help=_('create a system account'))
-@click.option('--config', help=_('path to the config file for this tool'))
+@click.option('--config', help=_('path to the config file for this tool'), metavar=_('CONF_PATH'))
 @click.argument('group')
 def groupadd(force, gid, key, non_unique, password, system, config, group):
     if not gid or force:
@@ -343,11 +352,11 @@ def groupadd(force, gid, key, non_unique, password, system, config, group):
 
 
 @click.command()
-@click.option('-g', '-gid', type=int, help=_('change the group ID to GID'))
-@click.option('-n', '-new-name', help=_('change the name to NEW_GROUP'))
+@click.option('-g', '-gid', type=int, help=_('change the group ID to GID'), metavar=_('GID'))
+@click.option('-n', '-new-name', help=_('change the name to NEW_GROUP'), metavar=_('NEW_GROUP'))
 @click.option('-o', '--non-unique', help=_('allow to use a duplicate (non-unique) GID'))
-@click.option('-p', '--password', help=_('change the password to this (encrypted) PASSWORD'))
-@click.option('--config', help=_('path to the config file for this tool'))
+@click.option('-p', '--password', help=_('change the password to this (encrypted) PASSWORD'), metavar=_('PASSWORD'))
+@click.option('--config', help=_('path to the config file for this tool'), metavar=_('CONF_PATH'))
 @click.argument('group')
 def groupmod(gid, config, new_name, non_unique, password, group):
     try:

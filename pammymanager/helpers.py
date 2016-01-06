@@ -1,5 +1,4 @@
 import configparser
-import gettext
 import grp
 import os
 import pwd
@@ -9,7 +8,6 @@ import syslog
 import __main__
 import pymysql
 
-_ = gettext.gettext
 progname = os.path.basename(__main__.__file__)
 
 

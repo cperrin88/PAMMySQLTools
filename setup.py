@@ -16,4 +16,7 @@ setup(name='PAMMysqlTools',
               'mygroupdel=pammymanager.scripts:groupdel',
               'mygroupmod=pammymanager.scripts:groupmod',
           ]
+      },
+      package_data= {
+          'pammymanager': ['*.mo']
       })
