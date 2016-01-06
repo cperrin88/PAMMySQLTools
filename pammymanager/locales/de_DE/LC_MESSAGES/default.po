@@ -1,0 +1,335 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PAMMySQLTools\n"
+"POT-Creation-Date: 2016-01-06 18:43+0100\n"
+"PO-Revision-Date: 2016-01-06 18:53+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: helpers.py:104
+#, python-brace-format
+msgid ""
+"{progname}: Invalid configuration: UID_MIN ({uid_min}), UID_MAX ({uid_max})"
+msgstr ""
+"{progname}: Ungültige Konfiguration: UID_MIN ({uid_min}, UID_MAX({uid_max})"
+
+#: helpers.py:113
+#, python-brace-format
+msgid ""
+"{progname}: Invalid configuration: SYS_UID_MIN ({sys_uid_min}), UID_MIN "
+"({uid_min}), SYS_UID_MAX ({sys_uid_max})"
+msgstr ""
+"{progname}: Ungülitige Konfiguration: SYS_UID_MIN ({sys_uid_min}), UID_MIN "
+"({uid_min}), SYS_UID_MAX ({sys_uid_max})"
+
+#: scripts.py:33
+msgid "base directory for the home directory of the new account"
+msgstr "Basisverzeichnis für das Home-Verzeichnis des neuen Benutzers"
+
+#: scripts.py:34
+msgid "BASE_DIR"
+msgstr "BASIS_VERZ"
+
+#: scripts.py:35
+msgid "GECOS field of the new account"
+msgstr "KOMMENTAR für das GECOS-Feld des neuen Benutzers"
+
+#: scripts.py:35 scripts.py:200
+msgid "COMMENT"
+msgstr "KOMMENTAR"
+
+#: scripts.py:36
+msgid "home directory of the new account"
+msgstr "Home-Verzeichnis des neuen Benutzers"
+
+#: scripts.py:36 scripts.py:201
+msgid "HOME_DIR"
+msgstr "HOME_VERZ"
+
+#: scripts.py:37
+msgid "expiration date of the new account"
+msgstr "Das Ablaufdatum des neuen Benutzerzugangs"
+
+#: scripts.py:37 scripts.py:203
+msgid "EXPIRE_DATE"
+msgstr "ABL_DATUM"
+
+#: scripts.py:38
+msgid "password inactivity period of the new account"
+msgstr "Passwort nach Ablauf von INAKTIV deaktivieren"
+
+#: scripts.py:39 scripts.py:205
+msgid "INACTIVE"
+msgstr "INAKTIV"
+
+#: scripts.py:40
+msgid "name or ID of the primary group of the new account"
+msgstr "Name oder ID der primären Gruppe des neuen Benutzerzugangs"
+
+#: scripts.py:40 scripts.py:206
+msgid "GROUP"
+msgstr "GRUPPE"
+
+#: scripts.py:41
+msgid "list of supplementary groups of the new account"
+msgstr "Liste der zusätzlichen Gruppen für den neuen Benutzerzugang"
+
+#: scripts.py:42 scripts.py:207 scripts.py:210
+msgid "GROUPS"
+msgstr "GRUPPEN"
+
+#: scripts.py:43
+msgid "use this alternative skeleton directory"
+msgstr "Ein alternatives skeleton-Verzeichnis (Vorlagenverzeichnis) verwenden"
+
+#: scripts.py:43
+msgid "SKEL_DIR"
+msgstr "SKEL_VERZ"
+
+#: scripts.py:44 scripts.py:315
+msgid "override /etc/login.defs defaults"
+msgstr "Die Vorgabewerte in /etc/login.defs überschreiben"
+
+#: scripts.py:45 scripts.py:316
+msgid "KEY=VALUE"
+msgstr "SCHLÜSSEL=WERT"
+
+#: scripts.py:46
+msgid "do not create the user's home directory"
+msgstr "Kein Home-Verzeichnis für den Benutzer erstellen"
+
+#: scripts.py:48
+msgid "do not create a group with the same name as the user"
+msgstr "Keine Gruppe mit dem gleichen Namen wie dem des Benutzers erstellen"
+
+#: scripts.py:50
+msgid "allow to create users with duplicate (non-unique) UID"
+msgstr "Benutzer mit doppelter (nicht einmaliger) UID erlauben"
+
+#: scripts.py:51
+msgid "encrypted password of the new account"
+msgstr "Verschlüsseltes Passwort für den neuen Benutzerzugang"
+
+#: scripts.py:51 scripts.py:216 scripts.py:318 scripts.py:360
+msgid "PASSWORD"
+msgstr "PASSWORT"
+
+#: scripts.py:52 scripts.py:319
+msgid "create a system account"
+msgstr "Eine Systemgruppe erstellen"
+
+#: scripts.py:53
+msgid "login shell of the new account"
+msgstr "Die Login-Shell des neuen Benutzerzugangs"
+
+#: scripts.py:53 scripts.py:217
+msgid "SHELL"
+msgstr "SHELL"
+
+#: scripts.py:54
+msgid "user ID of the new account"
+msgstr "Benutzer-ID (UID) des neuen Benutzerzugangs"
+
+#: scripts.py:54 scripts.py:218
+msgid "UID"
+msgstr "UID"
+
+#: scripts.py:55 scripts.py:148 scripts.py:220 scripts.py:320 scripts.py:361
+#: scripts.py:397
+msgid "path to the config file for this tool"
+msgstr "Pfad zur Konfigurationsdatei dieses Tools"
+
+#: scripts.py:55 scripts.py:220 scripts.py:320 scripts.py:361
+msgid "CONF_PATH"
+msgstr "CONF_PFAD"
+
+#: scripts.py:72
+msgid "Error: UID already taken"
+msgstr "Fehler: UID schon vergeben"
+
+#: scripts.py:79
+msgid "Error: Login name already taken"
+msgstr "Fehler: Benutzername schon vergeben"
+
+#: scripts.py:114
+msgid "Error: Insufficient permissions to create home dir"
+msgstr ""
+"Fehler: Unzureichende Berechtigungen zur Erstellung des Home-Verzeichnisses"
+
+#: scripts.py:117
+#, python-format
+msgid "Error: Directory \"%s\" already exists"
+msgstr "Fehler: Ordner \"%s\" existiert bereits"
+
+#: scripts.py:135 scripts.py:291
+#, python-brace-format
+msgid "Warning: Can't find group {group}"
+msgstr "Warnung: Kann Gruppe {group} nicht finden"
+
+#: scripts.py:146
+msgid "force removal of files, even if not owned by user"
+msgstr ""
+"Entfernen von Dateien erzwingen, auch wenn sie nicht Eigentum des zu "
+"löschenden Benutzers sind"
+
+#: scripts.py:147
+msgid "remove home directory and mail spool"
+msgstr "Entferne Home-Verzeichnis und Mail-Warteschlange"
+
+#: scripts.py:155
+msgid "Error: User not found"
+msgstr "Fehler: Benutzer nicht gefunden"
+
+#: scripts.py:165
+msgid "Error: User not in database"
+msgstr "Fehler: Benutzer nicht in Datenbank"
+
+#: scripts.py:191
+#, python-brace-format
+msgid ""
+"Warning: Primary group \"{group}\" of user is empty but not in Database. Try "
+"\"groupdel {group}\""
+msgstr ""
+"Warnung: Die primäre Gruppe {group}\" des Benutzers ist nicht in der "
+"Datenbank. Versuchen Sie \"groupdel {group}\""
+
+#: scripts.py:200
+msgid "new value of the GECOS field"
+msgstr "Neuer KOMMENTAR im GECOS-Feld"
+
+#: scripts.py:201
+msgid "new home directory for the user account"
+msgstr "Neues Home-Verzeichnis für den Benutzerzugang"
+
+#: scripts.py:202
+msgid "set account expiration date to EXPIRE_DATE"
+msgstr "Ablaufdatum auf ABL_DATUM setzen"
+
+#: scripts.py:204
+msgid "set password inactive after expiration to INACTIVE"
+msgstr "Passwort nach Ablauf von INAKTIV deaktivieren"
+
+#: scripts.py:206
+msgid "force use GROUP as new primary group"
+msgstr "Erzwinge GRUPPE als neue primäre Gruppe"
+
+#: scripts.py:207
+msgid "new list of supplementary GROUPS"
+msgstr "Neue Liste zusätzlicher GRUPPEN"
+
+#: scripts.py:209
+msgid ""
+"append the user to the supplemental GROUPS mentioned by the -G option "
+"without removing him/her from other groups"
+msgstr ""
+"Benutzer zu zusätzlichen Gruppen hinzufügen, die mit der Option -G angegeben "
+"werden, ohne ihn dabei aus anderen Gruppen zu entfernen"
+
+#: scripts.py:211
+msgid "new value of the login name"
+msgstr "Neuer Wert für den Namen des Benutzerzugangs"
+
+#: scripts.py:211
+msgid "NEW_LOGIN"
+msgstr "NEUER_NAME"
+
+#: scripts.py:212
+msgid "lock the user account"
+msgstr "Den Benutzerzugang sperren"
+
+#: scripts.py:214
+msgid ""
+"move contents of the home directory to the new location (use only with -d)"
+msgstr ""
+"Den Inhalt des Home-Verzeichnisses an den neuen Ort verschieben (nur mit -d "
+"benutzen)"
+
+#: scripts.py:215
+msgid "allow using duplicate (non-unique) UID"
+msgstr "Benutzung von doppelter (nicht einmaliger) UID erlauben"
+
+#: scripts.py:216
+msgid "use encrypted password for the new password"
+msgstr "Ein verschlüsseltes Passwort als neues Passwort verwenden"
+
+#: scripts.py:217
+msgid "new login shell for the user account"
+msgstr "Neue Login-Shell für den Benutzerzugang"
+
+#: scripts.py:218
+msgid "new UID for the user account"
+msgstr "Neue UID des Benutzerzugangs"
+
+#: scripts.py:219
+msgid "unlock the user account"
+msgstr "Den Benutzerzugang entsperren"
+
+#: scripts.py:303
+msgid "Error: Insufficient permissions to move home dir."
+msgstr ""
+"Fehler: Unzureichende Berechtigungen zum Verschieben des Home-Verschnisses"
+
+#: scripts.py:313
+msgid ""
+"exit successfully if the group already exists, and cancel -g if the GID is "
+"already used"
+msgstr ""
+"Ohne Fehler beenden, falls die Gruppe bereits existiert und Operation für -g "
+"abbrechen, falls die GID bereits verwendet wird"
+
+#: scripts.py:314
+msgid "use GID for the new group"
+msgstr "GID für die neue Gruppe benutzen"
+
+#: scripts.py:314 scripts.py:357
+msgid "GID"
+msgstr "GID"
+
+#: scripts.py:317
+msgid "allow to create groups with duplicate (non-unique) GID"
+msgstr "Erstellen einer Gruppe mit nicht einmaliger (doppelter) GID erlauben"
+
+#: scripts.py:318
+msgid "encrypted password of the new group"
+msgstr "Dieses verschlüsselte PASSWORT für die neue Gruppe verwenden"
+
+#: scripts.py:357
+msgid "change the group ID to GID"
+msgstr "Die Gruppen-ID auf GID ändern"
+
+#: scripts.py:358
+msgid "change the name to NEW_GROUP"
+msgstr "Den Gruppennamen auf NEUE_GRUPPE ändern"
+
+#: scripts.py:358
+msgid "NEW_GROUP"
+msgstr "NEUE_GRUPPE"
+
+#: scripts.py:359
+msgid "allow to use a duplicate (non-unique) GID"
+msgstr "Verwenden einer nicht einmaligen (doppelten) GID erlauben"
+
+#: scripts.py:360
+msgid "change the password to this (encrypted) PASSWORD"
+msgstr "Das Passwort auf dieses (verschlüsselte) PASSWORT ändern"
+
+#: scripts.py:367
+msgid "Error: Group not found"
+msgstr "Fehler: Gruppe nicht gefunden"
+
+#~ msgid ""
+#~ "{progname}: Invalid configuration: UID_MIN ({uid_min}), UID_MAX "
+#~ "({uid_max})\n"
+#~ msgstr "{progname}: Ungütige Konfiguration\n"

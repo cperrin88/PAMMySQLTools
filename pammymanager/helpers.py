@@ -43,6 +43,7 @@ def get_uid(user):
         gr = pwd.getpwnam(user)
         return int(gr.pw_uid)
 
+
 def get_config(path=None):
     if not path:
         path = [r'pam_mysql_manager.conf', r'/etc/pam_mysql_manager.conf',
@@ -100,15 +101,19 @@ def find_new_uid(sysuser, preferred_uid=None):
         uid_min = int(defs.get("UID_MIN", 1000))
         uid_max = int(defs.get("UID_MAX", 60000))
         if uid_max < uid_min:
-            ValueError(_('%s: Invalid configuration: UID_MIN (%lu), UID_MAX (%lu)\n') % (progname, uid_min, uid_max))
+            ValueError(_('{progname}: Invalid configuration: UID_MIN ({uid_min}), UID_MAX ({uid_max})').format(
+                    progname=progname, uid_min=uid_min, uid_max=uid_max))
     else:
         uid_min = int(defs.get("SYS_UID_MIN", 101))
         uid_max = int(defs.get("UID_MIN", 1000))
         uid_max = int(defs.get("SYS_UID_MAX", uid_max))
 
         if uid_max < uid_min:
-            raise ValueError(_('%s: Invalid configuration: SYS_UID_MIN (%lu), UID_MIN (%lu), SYS_UID_MAX (%lu)\n') % (
-                progname, uid_min, int(defs.get("UID_MIN", 1000)), uid_max))
+            raise ValueError(_(
+                    '{progname}: Invalid configuration: SYS_UID_MIN ({sys_uid_min}), UID_MIN ({uid_min}), SYS_UID_MAX '
+                    '({sys_uid_max})').format(progname=progname, sys_uid_min=uid_min,
+                                              uid_min=int(defs.get("UID_MIN", 1000)),
+                                              sys_uid_max=uid_max))
 
     if preferred_uid and uid_min < preferred_uid < uid_max:
         try:
@@ -135,6 +140,7 @@ def find_new_uid(sysuser, preferred_uid=None):
 
 def find_new_gid(sysuser, preferred_gid=None):
     defs = get_defs()
+    # TODO: Catch errors
     if not sysuser:
         gid_min = int(defs.get("GID_MIN", 1000))
         gid_max = int(defs.get("GID_MAX", 60000))
