@@ -4,8 +4,11 @@ services:
     - mysql
 
 
+variables:
+    MYSQL_DATABASE: auth_test
+
 before_script:
-    python3 setup.py easy_install
+    - python3 setup.py easy_install
 
 stages:
     - test
@@ -15,7 +18,5 @@ job1:
     stage: test
     script:
         - python3 setup.py test
-    variables:
-        MYSQL_DATABASE: auth_test
 
 
