@@ -6,6 +6,7 @@ services:
 
 variables:
     MYSQL_DATABASE: auth_test
+    MYSQL_ALLOW_EMPTY_PASSWORD: yes
 
 before_script:
     - python3 setup.py easy_install
