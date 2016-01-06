@@ -5,7 +5,6 @@ import os
 import pwd
 import shutil
 import syslog
-
 # noinspection PyUnresolvedReferences
 import __main__
 import pymysql
@@ -14,7 +13,6 @@ _ = gettext.gettext
 progname = os.path.basename(__main__.__file__)
 
 
-# TODO: Implement creating of homedir
 def create_home(path, skel, uid, gid):
     shutil.copytree(skel, path)
     umask = int(get_defs().get("UMASK", "022"), 8)
@@ -29,6 +27,21 @@ def create_home(path, skel, uid, gid):
     os.chmod(path, 0o777 - umask)
     os.chown(path, uid, gid)
 
+
+def get_gid(group):
+    try:
+        return int(group)
+    except ValueError:
+        gr = grp.getgrnam(group)
+        return int(gr.gr_gid)
+
+
+def get_uid(user):
+    try:
+        return int(user)
+    except ValueError:
+        gr = pwd.getpwnam(user)
+        return int(gr.pw_uid)
 
 def get_config(path=None):
     if not path:

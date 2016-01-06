@@ -9,7 +9,7 @@ import __main__
 import click
 import grp
 from pammymanager.helpers import get_config, find_new_uid, find_new_gid, connect_db, get_useradd_conf, get_defs, \
-    create_home
+    create_home, get_gid, get_uid
 from pammymanager.manager import UserManager, GroupListManager, GroupManager
 from pammymanager.validators import keyvalue, date, list
 
@@ -18,31 +18,36 @@ progname = os.path.basename(__main__.__file__)
 _ = gettext.gettext
 syslog.openlog(progname)
 
+# The reference date for the timestamps
+REFDATE = datetime.date(1970, 1, 1)
+
 
 @click.group()
 def cli():
     pass
 
 
+# TODO: Translate all strings
 @click.command()
-@click.option('-b', '--basedir', default=None, help=_('base directory for the home directory of the new account'))
-@click.option('-c', '--comment', default=None, help=_('GECOS field of the new account'))
-@click.option('-d', '--home-dir', default=None, help=_('home directory of the new account'))
-@click.option('-e', '--expiredate', default=None, type=date, help=_('expiration date of the new account'))
-@click.option('-f', '--inactive', default=None, type=int, help='password inactivity period of the new account')
-@click.option('-g', '--gid', default=None, type=int, help='name or ID of the primary group of the new account')
-@click.option('-G', '--groups', default=None, type=list, help='list of supplementary groups of the new account')
-@click.option('-k', '--skel', default=None, help='use this alternative skeleton directory')
-@click.option('-K', '--key', default=None, type=keyvalue, multiple=True, help='override /etc/login.defs defaults')
-@click.option('-M/-m', '--no-create-home/--create-home', default=False, help="do not create the user's home directory")
-@click.option('-U/-N', '--no-user-group/--user-group', default=False,
-              help='do not create a group with the same name as the user')
-@click.option('-o', '--non-unique', default=False, help='allow to create users with duplicate (non-unique) UID')
-@click.option('-p', '--password', default=None, help='encrypted password of the new account')
-@click.option('-r', '--system', default=False, is_flag=True, help='create a system account')
-@click.option('-s', '--shell', default=None, help='login shell of the new account')
-@click.option('-u', '--uid', default=None, type=int, help='user ID of the new account')
-@click.option('--config', default=None, help='path to the config file for this tool')
+@click.option('-b', '--basedir', help=_('base directory for the home directory of the new account'))
+@click.option('-c', '--comment', help=_('GECOS field of the new account'))
+@click.option('-d', '--home-dir', help=_('home directory of the new account'))
+@click.option('-e', '--expiredate', type=date, help=_('expiration date of the new account'))
+@click.option('-f', '--inactive', type=int, help=_('password inactivity period of the new account'))
+@click.option('-g', '--gid', type=int, help=_('name or ID of the primary group of the new account'))
+@click.option('-G', '--groups', type=list, help=_('list of supplementary groups of the new account'))
+@click.option('-k', '--skel', help=_('use this alternative skeleton directory'))
+@click.option('-K', '--key', type=keyvalue, multiple=True, help=_('override /etc/login.defs defaults'))
+@click.option('-M/-m', '--no-create-home/--create-home', help=_("do not create the user's home directory"))
+@click.option('-U/-N', '--no-user-group/--user-group',
+              help=_('do not create a group with the same name as the user'))
+@click.option('-o', '--non-unique', is_flag=True,
+              help=_('allow to create users with duplicate (non-unique) UID'))
+@click.option('-p', '--password', help=_('encrypted password of the new account'))
+@click.option('-r', '--system', is_flag=True, help=_('create a system account'))
+@click.option('-s', '--shell', help=_('login shell of the new account'))
+@click.option('-u', '--uid', type=int, help=_('user ID of the new account'))
+@click.option('--config', help=_('path to the config file for this tool'))
 @click.argument('login')
 @click.pass_context
 def useradd(ctx, basedir, comment, home_dir, expiredate, inactive, gid, groups, skel, key, no_create_home,
@@ -59,14 +64,14 @@ def useradd(ctx, basedir, comment, home_dir, expiredate, inactive, gid, groups, 
     else:
         try:
             if not non_unique and pwd.getpwuid(uid):
-                print("Error: UID already taken")
+                print(_("Error: UID already taken"))
                 exit(1)
         except KeyError:
             pass
 
     try:
-        if pwd.getpwnam(login):
-            print("Error: Login name already taken")
+        if not non_unique and pwd.getpwnam(login):
+            print(_("Error: Login name already taken"))
             exit(1)
     except KeyError:
         pass
@@ -91,7 +96,7 @@ def useradd(ctx, basedir, comment, home_dir, expiredate, inactive, gid, groups, 
             gid = find_new_gid(sysuser=system, preferred_gid=uid)
 
     if expiredate:
-        expiredate = (expiredate - datetime.date(1970, 1, 1)).days
+        expiredate = (expiredate - REFDATE).days
 
     if not no_create_home:
         if not skel:
@@ -105,7 +110,7 @@ def useradd(ctx, basedir, comment, home_dir, expiredate, inactive, gid, groups, 
             print(_('Error: Directory "%s" already exists' % home_dir))
             exit(1)
 
-    lastchg = datetime.date.today() - datetime.date(1970, 1, 1)
+    lastchg = datetime.date.today() - REFDATE
 
     dbs = connect_db(conf)
 
@@ -116,14 +121,11 @@ def useradd(ctx, basedir, comment, home_dir, expiredate, inactive, gid, groups, 
 
     if groups:
         glm = GroupListManager(conf, dbs)
-        for gid in groups:
-            glm.addgroupuser(login, gid)
         for g in groups:
             try:
-                glm.addgroupuser(login, int(g))
-            except ValueError:
-                gr = grp.getgrnam(g)
-                glm.addgroupuser(login, int(gr.gr_gid))
+                glm.addgroupuser(login, get_gid(g))
+            except KeyError:
+                print(_("Warning: Can't find group {group}".format(group=g)))
 
     dbs.commit()
     dbs.close()
@@ -133,15 +135,85 @@ def useradd(ctx, basedir, comment, home_dir, expiredate, inactive, gid, groups, 
 
 
 @click.command()
-@click.option('-f', '--force', default=False, is_flag=True,
-              help='force removal of files, even if not owned by user')
-@click.option('-r', '--remove', default=False, is_flag=True, help='remove home directory and mail spool')
-@click.option('--config', default=None, help='path to the config file for this tool')
+@click.option('-f', '--force', is_flag=True,
+              help=_('force removal of files, even if not owned by user'))
+@click.option('-r', '--remove', is_flag=True, help=_('remove home directory and mail spool'))
+@click.option('--config', help=_('path to the config file for this tool'))
 @click.argument('login')
 def userdel(force, remove, config, login):
+    user = None
+    try:
+        user = pwd.getpwnam(login)
+    except KeyError:
+        print(_("Error: User not found"))
+        exit(1)
+
     conf = get_config(config)
     dbs = connect_db(conf)
     pm = UserManager(config=conf, dbs=dbs)
+
+    try:
+        pm.deluser(username=login)
+    except KeyError:
+        print(_("Error: User not in database"))
+        exit(1)
+
+    if remove:
+        shutil.rmtree(str(user.pw_dir), ignore_errors=force)
+
+    glm = GroupListManager(conf, dbs)
+    glm.delallgroupuser(login)
+
+    dbs.commit()
+
+    gr = None
+    try:
+        gr = grp.getgrgid(user.pw_gid)
+        if gr.gr_mem:
+            exit(0)
+    except KeyError:
+        dbs.commit()
+        dbs.close()
+        exit(0)
+
+    gm = GroupManager(config=conf, dbs=dbs)
+
+    try:
+        gm.delgroup(gid=str(gr.gr_gid))
+    except ValueError:
+        print(_('Error: Primary group "{group}" of user is empty but not in Database. Try "groupdel {group}"'.format(
+                group=gr.gr_gid)))
+        exit(1)
+
+    dbs.commit()
+    dbs.close()
+
+
+# FIXME: Help strings wrong
+@click.command()
+@click.option('-c', '--comment', help=_('GECOS field of the new account'))
+@click.option('-d', '--home-dir', help=_('home directory of the new account'))
+@click.option('-e', '--expiredate', type=date, help=_('expiration date of the new account'))
+@click.option('-f', '--inactive', type=int, help=_('password inactivity period of the new account'))
+@click.option('-g', '--gid', type=int, help=_('name or ID of the primary group of the new account'))
+@click.option('-G', '--groups', type=list, help=_('list of supplementary groups of the new account'))
+@click.option('-a', '--append', is_flag=True,
+              help=_('append the user to the supplemental GROUPS mentioned by the -G option without removing him/her '
+                     'from other groups'))
+@click.option('-l', '--login', 'login_new', help=_('new value of the login name'))
+@click.option('-L', '--lock', is_flag=True, help=_('lock the user account'))
+@click.option('-m', '--move-home', default=True, is_flag=True,
+              help=_('move contents of the home directory to the new location (use only with -d)'))
+@click.option('-o', '--non-unique', is_flag=True, help=_('allow to create users with duplicate (non-unique) UID'))
+@click.option('-p', '--password', help=_('encrypted password of the new account'))
+@click.option('-s', '--shell', help=_('login shell of the new account'))
+@click.option('-u', '--uid', type=int, help=_('user ID of the new account'))
+@click.option('-U', '--unlock', is_flag=True, help=_('unlock the user account'))
+@click.option('--config', help=_('path to the config file for this tool'))
+@click.argument('login')
+def usermod(comment, home_dir, expiredate, inactive, gid, groups, append, login_new, lock, move_home, non_unique,
+            password, shell, uid, unlock, config, login):
+    conf = get_config(config)
     user = None
     try:
         user = pwd.getpwnam(login)
@@ -149,42 +221,94 @@ def userdel(force, remove, config, login):
         print("Error: User not found")
         exit(1)
 
-    try:
-        pm.deluser(uid=str(user.pw_uid))
-    except ValueError:
-        print("Error: User not in database")
-        exit(1)
+    if uid:
+        try:
+            if not non_unique and pwd.getpwuid(uid):
+                print("Error: UID already taken")
+                exit(1)
+        except KeyError:
+            pass
 
-    if remove:
-        shutil.rmtree(str(user.pw_dir), ignore_errors=force)
+    if expiredate:
+        expiredate = (expiredate - REFDATE).days
 
+    dbs = connect_db(conf)
+    pm = UserManager(conf, dbs)
+
+    if lock:
+        if not config.has_section('fields'):
+            section = config[config.default_section]
+        else:
+            section = config['fields']
+
+        pw = pm.getuserbyuid(get_uid(login))[section.get('password', 'password')]
+
+        if pw[0] != '!':
+            password = '!' + pw
+
+    if unlock:
+        if not config.has_section('fields'):
+            section = config[config.default_section]
+        else:
+            section = config['fields']
+
+        pw = pm.getuserbyuid(get_uid(login))[section.get('password', 'password')]
+
+        if pw[0] == '!':
+            password = pw[1:]
+
+    lastchg = None
+    if password:
+        lastchg = (datetime.date.today() - REFDATE).days
+
+    pm.moduser(username_old=login, username=login_new, gid=gid, uid=uid, gecos=comment, homedir=home_dir, shell=shell,
+               lstchg=lastchg, expire=expiredate, inact=inactive, password=password)
+
+    if login_new:
+        glm = GroupListManager(conf, dbs)
+        glm.modallgroupuser(login, login_new)
+
+    if groups:
+        if login_new:
+            login = login_new
+        glm = GroupListManager(conf, dbs)
+        if not append:
+            glm.delallgroupuser(login)
+            for group in groups:
+                try:
+                    glm.addgroupuser(login, get_gid(group))
+                except KeyError:
+                    print(_("Warning: Can't find group {group}".format(group=group)))
+        else:
+            db_groups = glm.getgroupsforuser(login)
+            for group in groups:
+                gid = get_gid(group)
+                if gid not in db_groups:
+                    glm.addgroupuser(login, gid)
+
+    if home_dir and move_home:
+        try:
+            shutil.move(str(user.pw_dir), home_dir)
+        except PermissionError:
+            print(_("Error: Insufficient permissions to move home dir."))
+            dbs.rollback()
+            dbs.close()
+            exit(1)
     dbs.commit()
     dbs.close()
 
 
-# TODO: Implement modifying users
 @click.command()
-def usermod():
-    pass
-
-
-@click.command()
-@click.option('-f', '--force', default=False, is_flag=True,
-              help='exit successfully if the group already exists, and cancel -g if the GID is already used')
-@click.option('-g', '--gid', default=None, type=int, help='use GID for the new group')
-@click.option('-K', '--key', default=None, type=keyvalue, multiple=True, help='override /etc/login.defs defaults')
-@click.option('-o', '--non-unique', default=False, help='allow to create groups with duplicate (non-unique) GID')
-@click.option('-p', '--password', default=None, help='encrypted password of the new group')
-@click.option('-r', '--system', default=False, is_flag=True, help='create a system account')
-@click.option('--config', default=None, help='path to the config file for this tool')
+@click.option('-f', '--force', is_flag=True,
+              help=_('exit successfully if the group already exists, and cancel -g if the GID is already used'))
+@click.option('-g', '--gid', type=int, help=_('use GID for the new group'))
+@click.option('-K', '--key', type=keyvalue, multiple=True, help=_('override /etc/login.defs defaults'))
+@click.option('-o', '--non-unique', help=_('allow to create groups with duplicate (non-unique) GID'))
+@click.option('-p', '--password', help=_('encrypted password of the new group'))
+@click.option('-r', '--system', is_flag=True, help=_('create a system account'))
+@click.option('--config', help=_('path to the config file for this tool'))
 @click.argument('group')
 def groupadd(force, gid, key, non_unique, password, system, config, group):
-    conf = get_config(config)
-    defs = get_defs()
-
-    for k, v in key:
-        defs[k] = v
-
     if not gid or force:
         gid = find_new_gid(sysuser=system)
     else:
@@ -204,6 +328,11 @@ def groupadd(force, gid, key, non_unique, password, system, config, group):
     except KeyError:
         pass
 
+    conf = get_config(config)
+    defs = get_defs()
+
+    for k, v in key:
+        defs[k] = v
     dbs = connect_db(conf)
 
     gm = GroupManager(conf, dbs)
@@ -213,21 +342,77 @@ def groupadd(force, gid, key, non_unique, password, system, config, group):
     dbs.close()
 
 
-# TODO: Implement modifying groups
 @click.command()
-def groupmod():
-    pass
+@click.option('-g', '-gid', type=int, help=_('change the group ID to GID'))
+@click.option('-n', '-new-name', help=_('change the name to NEW_GROUP'))
+@click.option('-o', '--non-unique', help=_('allow to use a duplicate (non-unique) GID'))
+@click.option('-p', '--password', help=_('change the password to this (encrypted) PASSWORD'))
+@click.option('--config', help=_('path to the config file for this tool'))
+@click.argument('group')
+def groupmod(gid, config, new_name, non_unique, password, group):
+    try:
+        gr = grp.getgrnam(group)
+    except KeyError:
+        print(_("Error: Group not found"))
+        exit(1)
+        return
+
+    conf = get_config(config)
+    dbs = connect_db(conf)
+
+    if gid:
+        try:
+            if not non_unique and grp.getgrgid(gid):
+                print("Error: GID already taken")
+                exit(1)
+        except KeyError:
+            pass
+        old_gid = int(gr.gr_gid)
+
+        glm = GroupListManager(conf, dbs)
+        glm.modallgroupgid(old_gid, gid)
+
+        um = UserManager(conf, dbs)
+        um.modallgid(old_gid, gid)
+
+    gm = GroupManager(conf, dbs)
+    gm.modgroup(name_old=group, name=new_name, gid=gid, password=password)
+
+    dbs.commit()
+    dbs.close()
 
 
-# TODO: Implement deleting groups
 @click.command()
-def groupdel():
-    pass
+@click.option('--config', help=_('path to the config file for this tool'))
+@click.argument('group')
+def groupdel(config, group):
+    try:
+        gr = grp.getgrnam(group)
+    except KeyError:
+        print("Error: Group not found")
+        exit(1)
+        return
+
+    conf = get_config(config)
+    dbs = connect_db(conf)
+    gm = GroupManager(config=conf, dbs=dbs)
+
+    try:
+        gm.delgroup(gid=str(gr.gr_gid))
+    except KeyError as e:
+        print("Error: %s" % e)
+        exit(1)
+
+    dbs.commit()
+    dbs.close()
 
 
 cli.add_command(useradd)
+cli.add_command(usermod)
 cli.add_command(userdel)
 cli.add_command(groupadd)
+cli.add_command(groupmod)
+cli.add_command(groupdel)
 
 if __name__ == "__main__":
     cli()
