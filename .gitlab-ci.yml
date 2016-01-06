@@ -9,7 +9,7 @@ variables:
     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
 
 before_script:
-    - python3 setup.py easy_install
+    - python3 setup.py build
 
 stages:
     - test
