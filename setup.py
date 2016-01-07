@@ -32,6 +32,7 @@ setup(name='PAMMySQLTools',
       package_data={
           'pammysqltools': ['*.mo']
       },
+      include_package_data=True,
       classifiers=[
           "License :: OSI Approved :: MIT License",
           "Environment :: Console"
