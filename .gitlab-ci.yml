@@ -6,6 +6,7 @@ services:
 variables:
     MYSQL_DATABASE: "auth_test"
     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    MYSQL_HOST: "mysql"
 
 stages:
     - test
