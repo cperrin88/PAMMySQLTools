@@ -8,10 +8,10 @@ import syslog
 import __main__
 import click
 import grp
-from pammymanager import get_config, find_new_uid, find_new_gid, connect_db, get_useradd_conf, get_defs, \
+from pammysqltools import get_config, find_new_uid, find_new_gid, connect_db, get_useradd_conf, get_defs, \
     create_home, get_gid, get_uid
-from pammymanager import UserManager, GroupListManager, GroupManager
-from pammymanager import keyvalue, date, list
+from pammysqltools import UserManager, GroupListManager, GroupManager
+from pammysqltools import keyvalue, date, list
 
 progname = os.path.basename(__main__.__file__)
 

@@ -4,7 +4,7 @@ import unittest
 import warnings
 
 import pymysql
-from pammymanager.manager import UserManager
+from pammysqltools.manager import UserManager
 
 
 class UserManagerTests(unittest.TestCase):

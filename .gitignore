@@ -61,5 +61,6 @@ target/
 # PyCharm
 .idea/
 
+.ropeproject/
 
 build/

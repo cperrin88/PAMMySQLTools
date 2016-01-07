@@ -3,7 +3,6 @@ image: "python:3"
 services:
     - mysql
 
-
 variables:
     MYSQL_DATABASE: "auth_test"
     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
@@ -20,7 +19,8 @@ job1:
 job2:
     stage: upload
     script:
-        - pip install twine wheel
+        - pip install twine wheel babel
+        - python3 setup.py compile_catalog -d pammysqltools/locales
         - python3 setup.py sdist bdist_wheel
         - twine upload -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD" dist/*
     only:
