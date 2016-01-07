@@ -8,7 +8,8 @@ from pammymanager.manager import UserManager
 
 
 class UserManagerTests(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         config = configparser.ConfigParser()
         config.read([r'pam_mysql_manager-test.conf', r'/etc/pam_mysql_manager-test.conf',
                      os.path.expanduser('~/.pam_mysql_manager-test.conf')])
@@ -28,7 +29,7 @@ class UserManagerTests(unittest.TestCase):
                               password=mysql_pass,
                               db=mysql_db,
                               port=mysql_port)
-        self.dbs = dbs
+        cls.dbs = dbs
         with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "testdb.sql"), "r") as f:
             sql = f.read()
 
@@ -39,14 +40,12 @@ class UserManagerTests(unittest.TestCase):
 
         dbs.commit()
 
-        self.um = UserManager(config, dbs)
+        cls.um = UserManager(config, dbs)
 
     def test_adduser(self):
         self.um.adduser("testuser", uid=1000, gid=1000)
         self.dbs.commit()
 
     def test_getuserbyuid(self):
-        self.um.adduser("testuser", uid=1000, gid=1000)
-        self.dbs.commit()
         user = self.um.getuserbyuid(1000)
         self.assertIsNotNone(user)
