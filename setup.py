@@ -26,6 +26,6 @@ setup(name='PAMMySQLTools',
           'pammymanager': ['*.mo']
       },
       classifiers=[
-          "LICENSE :: OSI Approved :: MIT License",
+          "License :: OSI Approved :: MIT License",
           "Environment :: Console"
       ])
