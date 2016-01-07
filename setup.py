@@ -5,7 +5,9 @@ setup(name='PAMMysqlTools',
       description='A set of tools to manage users from pam_mysql',
       author='Christopher Perrin',
       author_email='perrin@uni-trier.de',
+      url='https://gitlab.uni-trier.de/sad-team/PAMMySQL-Tools',
       packages=find_packages(),
+      test_suite='tests',
       install_requires=['pymysql', 'click'],
       entry_points={
           'console_scripts': [
