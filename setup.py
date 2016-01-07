@@ -1,12 +1,13 @@
 from setuptools import setup, find_packages
 
-setup(name='PAMMysqlTools',
+setup(name='PAMMySQLTools',
       version_format='{tag}',
       version='0.0.1',
       description='A set of tools to manage users from pam_mysql',
       author='Christopher Perrin',
       author_email='perrin@uni-trier.de',
       url='https://gitlab.uni-trier.de/sad-team/PAMMySQL-Tools',
+      license='MIT',
       packages=find_packages(),
       test_suite='tests',
       setup_requires=['setuptools-git-version'],
@@ -23,4 +24,8 @@ setup(name='PAMMysqlTools',
       },
       package_data= {
           'pammymanager': ['*.mo']
-      })
+      },
+      classifiers=[
+          "LICENSE :: OSI Approved :: MIT",
+          "Environment :: Console"
+      ])
