@@ -23,7 +23,7 @@ class UserManagerTests(unittest.TestCase):
         if not os.getenv("TEST_MYSQL_HOST"):
             mysql_host = section.get('host', 'localhost')
         else:
-            mysql_host = os.getenv("MYSQL_HOST")
+            mysql_host = os.getenv("TEST_MYSQL_HOST")
         mysql_port = int(section.get('port', 3306))
         mysql_db = section.get('database', 'auth_test')
 
