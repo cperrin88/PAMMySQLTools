@@ -20,7 +20,7 @@ class UserManagerTests(unittest.TestCase):
 
         mysql_user = section.get('user', 'root')
         mysql_pass = section.get('password', '')
-        mysql_host = section.get('host', 'localhost')
+        mysql_host = section.get('host', 'mysql')
         mysql_port = int(section.get('port', 3306))
         mysql_db = section.get('database', 'auth_test')
 
