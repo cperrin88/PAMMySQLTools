@@ -1,333 +1,324 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR ORGANIZATION
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# English translations for PAMMySQLTools.
+# Copyright (C) 2016 ORGANIZATION
+# This file is distributed under the same license as the PAMMySQLTools
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PAMMySQLTools\n"
-"POT-Creation-Date: 2016-01-06 19:21+0100\n"
-"PO-Revision-Date: 2016-01-06 19:26+0100\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2016-01-07 17:35+0100\n"
+"PO-Revision-Date: 2016-01-07 17:39+0100\n"
 "Last-Translator: \n"
-"Language-Team: \n"
 "Language: en\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.5\n"
-"X-Generator: Poedit 1.8.4\n"
-"X-Poedit-Basepath: ../../..\n"
+"Language-Team: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-SearchPath-0: .\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.2.0\n"
+"X-Generator: Poedit 1.8.4\n"
 
-#: helpers.py:102
+#: pammysqltools/helpers.py:102
 #, python-brace-format
-msgid ""
-"{progname}: Invalid configuration: UID_MIN ({uid_min}), UID_MAX ({uid_max})"
-msgstr ""
-"{progname}: Invalid configuration: UID_MIN ({uid_min}), UID_MAX ({uid_max})"
+msgid "{progname}: Invalid configuration: UID_MIN ({uid_min}), UID_MAX ({uid_max})"
+msgstr "{progname}: Invalid configuration: UID_MIN ({uid_min}), UID_MAX ({uid_max})"
 
-#: helpers.py:111
+#: pammysqltools/helpers.py:110
 #, python-brace-format
-msgid ""
-"{progname}: Invalid configuration: SYS_UID_MIN ({sys_uid_min}), UID_MIN "
-"({uid_min}), SYS_UID_MAX ({sys_uid_max})"
-msgstr ""
-"{progname}: Invalid configuration: SYS_UID_MIN ({sys_uid_min}), UID_MIN "
-"({uid_min}), SYS_UID_MAX ({sys_uid_max})"
+msgid "{progname}: Invalid configuration: SYS_UID_MIN ({sys_uid_min}), UID_MIN ({uid_min}), SYS_UID_MAX ({sys_uid_max})"
+msgstr "{progname}: Invalid configuration: SYS_UID_MIN ({sys_uid_min}), UID_MIN ({uid_min}), SYS_UID_MAX ({sys_uid_max})"
 
-#: scripts.py:31
+#: pammysqltools/scripts.py:31
 msgid "base directory for the home directory of the new account"
 msgstr "base directory for the home directory of the new account"
 
-#: scripts.py:32
+#: pammysqltools/scripts.py:32
 msgid "BASE_DIR"
 msgstr "BASE_DIR"
 
-#: scripts.py:33
+#: pammysqltools/scripts.py:33
 msgid "GECOS field of the new account"
 msgstr "GECOS field of the new account"
 
-#: scripts.py:33 scripts.py:198
+#: pammysqltools/scripts.py:33 pammysqltools/scripts.py:198
 msgid "COMMENT"
 msgstr "COMMENT"
 
-#: scripts.py:34
+#: pammysqltools/scripts.py:34
 msgid "home directory of the new account"
 msgstr "home directory of the new account"
 
-#: scripts.py:34 scripts.py:199
+#: pammysqltools/scripts.py:34 pammysqltools/scripts.py:199
 msgid "HOME_DIR"
 msgstr "HOME_DIR"
 
-#: scripts.py:35
+#: pammysqltools/scripts.py:35
 msgid "expiration date of the new account"
 msgstr "expiration date of the new account"
 
-#: scripts.py:35 scripts.py:201
+#: pammysqltools/scripts.py:35 pammysqltools/scripts.py:201
 msgid "EXPIRE_DATE"
 msgstr "EXPIRE_DATE"
 
-#: scripts.py:36
+#: pammysqltools/scripts.py:36
 msgid "password inactivity period of the new account"
 msgstr "password inactivity period of the new account"
 
-#: scripts.py:37 scripts.py:203
+#: pammysqltools/scripts.py:37 pammysqltools/scripts.py:203
 msgid "INACTIVE"
 msgstr "INACTIVE"
 
-#: scripts.py:38
+#: pammysqltools/scripts.py:38
 msgid "name or ID of the primary group of the new account"
 msgstr "name or ID of the primary group of the new account"
 
-#: scripts.py:38 scripts.py:204
+#: pammysqltools/scripts.py:38 pammysqltools/scripts.py:204
 msgid "GROUP"
 msgstr "GROUP"
 
-#: scripts.py:39
+#: pammysqltools/scripts.py:39
 msgid "list of supplementary groups of the new account"
 msgstr "list of supplementary groups of the new account"
 
-#: scripts.py:40 scripts.py:205 scripts.py:208
+#: pammysqltools/scripts.py:40 pammysqltools/scripts.py:205
+#: pammysqltools/scripts.py:208
 msgid "GROUPS"
 msgstr "GROUPS"
 
-#: scripts.py:41
+#: pammysqltools/scripts.py:41
 msgid "use this alternative skeleton directory"
 msgstr "use this alternative skeleton directory"
 
-#: scripts.py:41
+#: pammysqltools/scripts.py:41
 msgid "SKEL_DIR"
 msgstr "SKEL_DIR"
 
-#: scripts.py:42 scripts.py:313
+#: pammysqltools/scripts.py:42 pammysqltools/scripts.py:313
 msgid "override /etc/login.defs defaults"
 msgstr "override /etc/login.defs defaults"
 
-#: scripts.py:43 scripts.py:314
+#: pammysqltools/scripts.py:43 pammysqltools/scripts.py:314
 msgid "KEY=VALUE"
 msgstr "KEY=VALUE"
 
-#: scripts.py:44
+#: pammysqltools/scripts.py:44
 msgid "do not create the user's home directory"
 msgstr "do not create the user's home directory"
 
-#: scripts.py:46
+#: pammysqltools/scripts.py:46
 msgid "do not create a group with the same name as the user"
 msgstr "do not create a group with the same name as the user"
 
-#: scripts.py:48
+#: pammysqltools/scripts.py:48
 msgid "allow to create users with duplicate (non-unique) UID"
 msgstr "allow to create users with duplicate (non-unique) UID"
 
-#: scripts.py:49
+#: pammysqltools/scripts.py:49
 msgid "encrypted password of the new account"
 msgstr "encrypted password of the new account"
 
-#: scripts.py:49 scripts.py:214 scripts.py:316 scripts.py:358
+#: pammysqltools/scripts.py:49 pammysqltools/scripts.py:214
+#: pammysqltools/scripts.py:316 pammysqltools/scripts.py:358
 msgid "PASSWORD"
 msgstr "PASSWORD"
 
-#: scripts.py:50 scripts.py:317
+#: pammysqltools/scripts.py:50 pammysqltools/scripts.py:317
 msgid "create a system account"
 msgstr "create a system account"
 
-#: scripts.py:51
+#: pammysqltools/scripts.py:51
 msgid "login shell of the new account"
 msgstr "login shell of the new account"
 
-#: scripts.py:51 scripts.py:215
+#: pammysqltools/scripts.py:51 pammysqltools/scripts.py:215
 msgid "SHELL"
 msgstr "SHELL"
 
-#: scripts.py:52
+#: pammysqltools/scripts.py:52
 msgid "user ID of the new account"
 msgstr "user ID of the new account"
 
-#: scripts.py:52 scripts.py:216
+#: pammysqltools/scripts.py:52 pammysqltools/scripts.py:216
 msgid "UID"
 msgstr "UID"
 
-#: scripts.py:53 scripts.py:146 scripts.py:218 scripts.py:318 scripts.py:359
-#: scripts.py:395
+#: pammysqltools/scripts.py:53 pammysqltools/scripts.py:146
+#: pammysqltools/scripts.py:218 pammysqltools/scripts.py:318
+#: pammysqltools/scripts.py:359 pammysqltools/scripts.py:395
 msgid "path to the config file for this tool"
 msgstr "path to the config file for this tool"
 
-#: scripts.py:53 scripts.py:218 scripts.py:318 scripts.py:359
+#: pammysqltools/scripts.py:53 pammysqltools/scripts.py:218
+#: pammysqltools/scripts.py:318 pammysqltools/scripts.py:359
 msgid "CONF_PATH"
 msgstr "CONF_PATH"
 
-#: scripts.py:70
+#: pammysqltools/scripts.py:70
 msgid "Error: UID already taken"
 msgstr "Error: UID already taken"
 
-#: scripts.py:77
+#: pammysqltools/scripts.py:77
 msgid "Error: Login name already taken"
 msgstr "Error: Login name already taken"
 
-#: scripts.py:112
+#: pammysqltools/scripts.py:112
 msgid "Error: Insufficient permissions to create home dir"
 msgstr "Error: Insufficient permissions to create home dir"
 
-#: scripts.py:115
+#: pammysqltools/scripts.py:115
 #, python-format
 msgid "Error: Directory \"%s\" already exists"
 msgstr "Error: Directory \"%s\" already exists"
 
-#: scripts.py:133 scripts.py:289
+#: pammysqltools/scripts.py:133 pammysqltools/scripts.py:289
 #, python-brace-format
 msgid "Warning: Can't find group {group}"
 msgstr "Warning: Can't find group {group}"
 
-#: scripts.py:144
+#: pammysqltools/scripts.py:144
 msgid "force removal of files, even if not owned by user"
 msgstr "force removal of files, even if not owned by user"
 
-#: scripts.py:145
+#: pammysqltools/scripts.py:145
 msgid "remove home directory and mail spool"
 msgstr "remove home directory and mail spool"
 
-#: scripts.py:153
+#: pammysqltools/scripts.py:153
 msgid "Error: User not found"
 msgstr "Error: User not found"
 
-#: scripts.py:163
+#: pammysqltools/scripts.py:163
 msgid "Error: User not in database"
 msgstr "Error: User not in database"
 
-#: scripts.py:189
+#: pammysqltools/scripts.py:189
 #, python-brace-format
-msgid ""
-"Warning: Primary group \"{group}\" of user is empty but not in Database. Try "
-"\"groupdel {group}\""
-msgstr ""
-"Warning: Primary group \"{group}\" of user is empty but not in Database. Try "
-"\"groupdel {group}\""
+msgid "Warning: Primary group \"{group}\" of user is empty but not in Database. Try \"groupdel {group}\""
+msgstr "Warning: Primary group \"{group}\" of user is empty but not in Database. Try \"groupdel {group}\""
 
-#: scripts.py:198
+#: pammysqltools/scripts.py:198
 msgid "new value of the GECOS field"
 msgstr "new value of the GECOS field"
 
-#: scripts.py:199
+#: pammysqltools/scripts.py:199
 msgid "new home directory for the user account"
 msgstr "new home directory for the user account"
 
-#: scripts.py:200
+#: pammysqltools/scripts.py:200
 msgid "set account expiration date to EXPIRE_DATE"
 msgstr "set account expiration date to EXPIRE_DATE"
 
-#: scripts.py:202
+#: pammysqltools/scripts.py:202
 msgid "set password inactive after expiration to INACTIVE"
 msgstr "set password inactive after expiration to INACTIVE"
 
-#: scripts.py:204
+#: pammysqltools/scripts.py:204
 msgid "force use GROUP as new primary group"
 msgstr "force use GROUP as new primary group"
 
-#: scripts.py:205
+#: pammysqltools/scripts.py:205
 msgid "new list of supplementary GROUPS"
 msgstr "new list of supplementary GROUPS"
 
-#: scripts.py:207
-msgid ""
-"append the user to the supplemental GROUPS mentioned by the -G option "
-"without removing him/her from other groups"
-msgstr ""
-"append the user to the supplemental GROUPS mentioned by the -G option "
-"without removing him/her from other groups"
+#: pammysqltools/scripts.py:207
+msgid "append the user to the supplemental GROUPS mentioned by the -G option without removing him/her from other groups"
+msgstr "append the user to the supplemental GROUPS mentioned by the -G option without removing him/her from other groups"
 
-#: scripts.py:209
+#: pammysqltools/scripts.py:209
 msgid "new value of the login name"
 msgstr "new value of the login name"
 
-#: scripts.py:209
+#: pammysqltools/scripts.py:209
 msgid "NEW_LOGIN"
 msgstr "NEW_LOGIN"
 
-#: scripts.py:210
+#: pammysqltools/scripts.py:210
 msgid "lock the user account"
 msgstr "lock the user account"
 
-#: scripts.py:212
-msgid ""
-"move contents of the home directory to the new location (use only with -d)"
-msgstr ""
-"move contents of the home directory to the new location (use only with -d)"
+#: pammysqltools/scripts.py:212
+msgid "move contents of the home directory to the new location (use only with -d)"
+msgstr "move contents of the home directory to the new location (use only with -d)"
 
-#: scripts.py:213
+#: pammysqltools/scripts.py:213
 msgid "allow using duplicate (non-unique) UID"
 msgstr "allow using duplicate (non-unique) UID"
 
-#: scripts.py:214
+#: pammysqltools/scripts.py:214
 msgid "use encrypted password for the new password"
 msgstr "use encrypted password for the new password"
 
-#: scripts.py:215
+#: pammysqltools/scripts.py:215
 msgid "new login shell for the user account"
 msgstr "new login shell for the user account"
 
-#: scripts.py:216
+#: pammysqltools/scripts.py:216
 msgid "new UID for the user account"
 msgstr "new UID for the user account"
 
-#: scripts.py:217
+#: pammysqltools/scripts.py:217
 msgid "unlock the user account"
 msgstr "unlock the user account"
 
-#: scripts.py:301
+#: pammysqltools/scripts.py:301
 msgid "Error: Insufficient permissions to move home dir."
 msgstr "Error: Insufficient permissions to move home dir."
 
-#: scripts.py:311
-msgid ""
-"exit successfully if the group already exists, and cancel -g if the GID is "
-"already used"
-msgstr ""
-"exit successfully if the group already exists, and cancel -g if the GID is "
-"already used"
+#: pammysqltools/scripts.py:311
+msgid "exit successfully if the group already exists, and cancel -g if the GID is already used"
+msgstr "exit successfully if the group already exists, and cancel -g if the GID is already used"
 
-#: scripts.py:312
+#: pammysqltools/scripts.py:312
 msgid "use GID for the new group"
 msgstr "use GID for the new group"
 
-#: scripts.py:312 scripts.py:355
+#: pammysqltools/scripts.py:312 pammysqltools/scripts.py:355
 msgid "GID"
 msgstr "GID"
 
-#: scripts.py:315
+#: pammysqltools/scripts.py:315
 msgid "allow to create groups with duplicate (non-unique) GID"
 msgstr "allow to create groups with duplicate (non-unique) GID"
 
-#: scripts.py:316
+#: pammysqltools/scripts.py:316
 msgid "encrypted password of the new group"
 msgstr "encrypted password of the new group"
 
-#: scripts.py:355
+#: pammysqltools/scripts.py:355
 msgid "change the group ID to GID"
 msgstr "change the group ID to GID"
 
-#: scripts.py:356
+#: pammysqltools/scripts.py:356
 msgid "change the name to NEW_GROUP"
 msgstr "change the name to NEW_GROUP"
 
-#: scripts.py:356
+#: pammysqltools/scripts.py:356
 msgid "NEW_GROUP"
 msgstr "NEW_GROUP"
 
-#: scripts.py:357
+#: pammysqltools/scripts.py:357
 msgid "allow to use a duplicate (non-unique) GID"
 msgstr "allow to use a duplicate (non-unique) GID"
 
-#: scripts.py:358
+#: pammysqltools/scripts.py:358
 msgid "change the password to this (encrypted) PASSWORD"
 msgstr "change the password to this (encrypted) PASSWORD"
 
-#: scripts.py:365
+#: pammysqltools/scripts.py:365
 msgid "Error: Group not found"
 msgstr "Error: Group not found"
 
+#: pammysqltools/validators.py:14
+#, python-format
+msgid "\"%s\" is not a valid key/value pair"
+msgstr "\"%s\" is not a valid key/value pair"
+
+#: pammysqltools/validators.py:24
+#, python-format
+msgid "\"%s\" is not a valid date"
+msgstr "\"%s\" is not a valid date"
+
 #~ msgid ""
-#~ "{progname}: Invalid configuration: UID_MIN ({uid_min}), UID_MAX "
-#~ "({uid_max})\n"
 #~ msgstr ""
-#~ "{progname}: Invalid configuration: UID_MIN ({uid_min}), UID_MAX "
-#~ "({uid_max})\n"

@@ -15,7 +15,7 @@ from pammysqltools.validators import keyvalue, date, list
 
 progname = os.path.basename(__main__.__file__)
 
-gettext.install('default', os.path.join(os.path.dirname(os.path.realpath(__file__)), "locales"))
+gettext.install('messages', os.path.join(os.path.dirname(os.path.realpath(__file__)), "locales"))
 syslog.openlog(progname)
 
 # The reference date for the timestamps

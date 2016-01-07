@@ -11,7 +11,7 @@ class KeyValueType(click.ParamType):
             k, v = value.split('=', 1)
             return k.strip(), v.strip()
         except ValueError:
-            self.fail('"%s" is not a valid key/value pair' % value, param, ctx)
+            self.fail(_('"%s" is not a valid key/value pair') % value, param, ctx)
 
 
 class DateType(click.ParamType):
@@ -21,7 +21,7 @@ class DateType(click.ParamType):
         try:
             return datetime.datetime.strptime(value, '%Y-%m-%d').date()
         except ValueError:
-            self.fail('"%s" is not a valid date' % value, param, ctx)
+            self.fail(_('"%s" is not a valid date') % value, param, ctx)
 
 
 class ListType(click.ParamType):

@@ -20,7 +20,10 @@ class UserManagerTests(unittest.TestCase):
 
         mysql_user = section.get('user', 'root')
         mysql_pass = section.get('password', '')
-        mysql_host = section.get('host', 'mysql')
+        if not os.getenv("MYSQL_HOST"):
+            mysql_host = section.get('host', 'localhost')
+        else:
+            mysql_host = os.getenv("MYSQL_HOST")
         mysql_port = int(section.get('port', 3306))
         mysql_db = section.get('database', 'auth_test')
 
