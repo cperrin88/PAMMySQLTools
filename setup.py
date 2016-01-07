@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='PAMMysqlTools',
-      version='{tag}',
+      version_format='{tag}',
       description='A set of tools to manage users from pam_mysql',
       author='Christopher Perrin',
       author_email='perrin@uni-trier.de',
