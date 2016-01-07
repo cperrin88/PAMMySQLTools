@@ -43,7 +43,8 @@ class UserManagerTests(unittest.TestCase):
         cls.um = UserManager(config, dbs)
 
     def test_adduser(self):
-        self.um.adduser("testuser", uid=1000, gid=1000)
+        self.um.adduser("testuser", uid=1000, gid=1000,
+                        homedir='/home/testuser', shell='/bin/sh', lstchg=0)
         self.dbs.commit()
 
     def test_getuserbyuid(self):
