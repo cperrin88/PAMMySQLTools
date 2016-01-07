@@ -8,9 +8,6 @@ variables:
     MYSQL_DATABASE: "auth_test"
     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
 
-before_script:
-    - python3 setup.py build
-
 stages:
     - test
     - upload
@@ -25,6 +22,6 @@ job2:
     script:
         - pip install twine
         - python3 setup.py sdist bdist bdist_egg
-        - twine upload dist/* -u $PYPI_USERNAME -p '$PYPI_PASSWORD'
+        - twine upload -u $PYPI_USERNAME -p '$PYPI_PASSWORD' dist/*
     only:
         - tags
