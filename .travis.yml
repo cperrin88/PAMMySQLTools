@@ -13,14 +13,15 @@ before_script: mysql -e 'CREATE DATABASE IF NOT EXISTS auth_test;'
 script: python3 setup.py test
 
 before_deploy:
-- python3 setup.py compile_catalog -d pammysqltools/locales
+  - python3 setup.py compile_catalog -d pammysqltools/locales
 
 deploy:
   provider: pypi
   user: cperrin88
   password:
     secure: XTxLvR6IeLPTxoM7/krzQO+5DOsVzCj3z+3Y+HjWS3Xex696IeymNHhAhgbWwNSOx9J2UrYESmVPoEGxPeWL9Dn8TQC0cnhQln2Xzpx/LMofGPQMPo23vGRAt8mlOCY1v7VqCf6ZCTQVh2/XM3mQdul6RdZn9LRMbVebaO8PKl5xpUIHrlQENTcXzPiJgTC7Cmjok11fpqMWOuMDx+/2iOJ8pCVKesdwCgWR3/62dVgxK8Erd2VkVrOiYJSXuSNUUGrD1NxEzL67OCZxFwJvw22QbrWcrK/ErsQoD5RWU7/N/p3qZCTWfPXru5CPatwzvcVYd3jCZnD0n/X841kDCnKaVTHEgJ46ZQlKXWf/yLi9m2XVuUkdhg2XlH+b6QeAgRjCwmB+TlVMxXzEUOIimaYKnRPgpnBpEH9QtQh9Q5mTjAZq3uajXHxnq6S4EbgQZM6zxXp/WjkgGuxXbR5UqogdQnDv5OBic3FiKTFe54M8LpuQXXTJ0ftDyvpUP8whyUlW3qusgkZUs8xhrFafJDEkUC6aTnk+HmS7FjxlacGrGvbc9KXAUMyQuU2CzvTT2DpBk8aIFcbtLXgmiLhhp/ueQJ9qAnQ3A7zxfGas4ZOhiB2Wz7arrU14pTTxmA/roCCprlIs7jxcpDN+RhHVrKiRP9TONhkcAx6My3iMSMc=
+
+  distributions: sdist bdist_wheel
   on:
     tags: true
-    distributions: sdist bdist_wheel
     repo: cperrin88/PAMMySQLTools
