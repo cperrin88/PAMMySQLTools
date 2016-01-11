@@ -104,9 +104,6 @@ class UserManager(AbstractManager):
             self.getuserbyusername(username_old)
             cur.execute(sql, values)
 
-    def create_table(self, collation=None):
-        pass
-
     def modallgid(self, gid, gid_new):
         s_fields = self.get_config_section('fields')
         s_tables = self.get_config_section('tables')
