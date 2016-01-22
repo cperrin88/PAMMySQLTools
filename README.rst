@@ -2,7 +2,7 @@ PAMMySQL Tools
 ==============
 
 .. image:: https://travis-ci.org/cperrin88/PAMMySQLTools.svg
-   :target: https://travis-ci.org/cperrin88/PAMMySQLTools
+:target: https://travis-ci.org/cperrin88/PAMMySQLTools
 
 PAMMySQL Tools ist a suite to manage users for pam_mysql and libnss-mysql. It tries to mimic the behaviours of the linux tools user{add,mod,del} and group{add,mod,del}
 
@@ -21,8 +21,13 @@ This will install the scripts:
  - mygroupmod
  - mygroupdel
 
-Documentation
+Configuration
 -------------
+
+In the directory :code:`docs` you can find an example config with all everything set. If you don't set a value, the tools will assume the values in the original config as default values.
+
+Running the Software
+--------------------
 
 To display help for any of the scripts, start with the --help parameter
 

@@ -2,11 +2,26 @@ from pymysql.cursors import DictCursor
 
 
 class AbstractManager(object):
+    """
+    The abstract manager superclass for all managers
+
+    :param config: The config for the manager
+    :type config: configparser
+    :param dbs: The :class:`pymysql.Connection` instance to use
+    :type dbs: pymysql.Connection
+    """
+
     def __init__(self, config, dbs):
         self.config = config
         self.dbs = dbs
 
     def get_config_section(self, name):
+        """
+        A helper method to get the default section from config if the wanted section is not present
+
+        :param name: The name of the config section
+        :type name: str
+        """
         if not self.config.has_section(name):
             return self.config[self.config.default_section]
         else:
@@ -14,6 +29,14 @@ class AbstractManager(object):
 
 
 class UserManager(AbstractManager):
+    """
+    Manages users
+
+    :param config: The config for the manager
+    :type config: configparser
+    :param dbs: The :class:`pymysql.Connection` instance to use
+    :type dbs: pymysql.Connection
+    """
     def getuserbyuid(self, uid):
         s_fields = self.get_config_section('fields')
         s_tables = self.get_config_section('tables')
@@ -116,7 +139,22 @@ class UserManager(AbstractManager):
 
 
 class GroupListManager(AbstractManager):
+    """
+    Manages the mapping between groups and users
+
+    :param config: The config for the manager
+    :type config: configparser
+    :param dbs: The :class:`pymysql.Connection` instance to use
+    :type dbs: pymysql.Connection
+    """
     def getgroupsforuser(self, username):
+        """
+        Gets a list of all group ids for a username
+
+        :param username: The username that will be searched for
+        :type username: str
+        :return: list
+        """
         s_fields = self.get_config_section('fields')
         s_tables = self.get_config_section('tables')
 
@@ -133,6 +171,12 @@ class GroupListManager(AbstractManager):
         return [item for sublist in result for item in sublist]
 
     def addgroupuser(self, username, gid):
+        """
+        Add a group/user mapping
+
+        :param username: A username to add to the mapping
+        :param gid: A group id to add to the mapping
+        """
         s_fields = self.get_config_section('fields')
         s_tables = self.get_config_section('tables')
         sql = "INSERT INTO `%s` SET `%s`=%%s,`%s`=%%s;" % (
@@ -143,6 +187,12 @@ class GroupListManager(AbstractManager):
             cur.execute(sql, (username, gid))
 
     def delgroupuser(self, username, gid):
+        """
+        Delete a group/user mapping
+
+        :param username: A username to delete from the mapping
+        :param gid: The group id (gid) for the to delete from
+        """
         s_fields = self.get_config_section('fields')
         s_tables = self.get_config_section('tables')
         sql = "DELETE FROM `%s` WHERE `%s`=%%s;" % (
@@ -152,6 +202,11 @@ class GroupListManager(AbstractManager):
             cur.execute(sql, username)
 
     def delallgroupuser(self, username):
+        """
+        Delete all group/user mappings for a user
+
+        :param username: The user to delete from all mappings
+        """
         s_fields = self.get_config_section('fields')
         s_tables = self.get_config_section('tables')
         sql = "DELETE FROM `%s` WHERE `%s`=%%s;" % (
@@ -161,6 +216,12 @@ class GroupListManager(AbstractManager):
             cur.execute(sql, username)
 
     def modallgroupuser(self, username, new_username):
+        """
+        Change username for all mappings
+
+        :param username: Old(current) username
+        :param new_username: New username
+        """
         s_fields = self.get_config_section('fields')
         s_tables = self.get_config_section('tables')
         sql = "UPDATE `{grouplist}` SET `{username}`=%s WHERE `{username}`=%s".format(
@@ -178,6 +239,14 @@ class GroupListManager(AbstractManager):
 
 
 class GroupManager(AbstractManager):
+    """
+    Manages groups
+
+    :param config: The config for the manager
+    :type config: configparser
+    :param dbs: The :class:`pymysql.Connection` instance to use
+    :type dbs: pymysql.Connection
+    """
     def getgroupbyname(self, group):
         s_fields = self.get_config_section('fields')
         s_tables = self.get_config_section('tables')
