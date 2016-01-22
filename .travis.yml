@@ -6,6 +6,8 @@ python:
 - '3.5-dev'
 - 'nightly'
 
+cache: pip
+
 services: mysql
 
 before_script: mysql -e 'CREATE DATABASE IF NOT EXISTS auth_test;'
