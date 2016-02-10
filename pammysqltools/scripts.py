@@ -8,6 +8,7 @@ import syslog
 import __main__
 import click
 import grp
+
 from pammysqltools.helpers import get_config, find_new_uid, find_new_gid, connect_db, get_useradd_conf, get_defs, \
     create_home, get_gid, get_uid
 from pammysqltools.manager import UserManager, GroupListManager, GroupManager
@@ -187,7 +188,7 @@ def userdel(force, remove, config, login):
         gm.delgroup(gid=str(gr.gr_gid))
     except ValueError:
         print(_('Warning: Primary group "{group}" of user is empty but not in Database. Try "groupdel {group}"').format(
-                group=gr.gr_gid))
+            group=gr.gr_gid))
         exit(1)
 
     dbs.commit()
@@ -237,8 +238,8 @@ def usermod(comment, home_dir, expiredate, inactive, gid, groups, append, login_
 
     if expiredate:
         expiredate = (expiredate - REFDATE).days
-
-    gid = get_gid(gid)
+    if gid:
+        gid = get_gid(gid)
 
     dbs = connect_db(conf)
     pm = UserManager(conf, dbs)
@@ -412,6 +413,84 @@ def groupdel(config, group):
         print("Error: %s" % e)
         exit(1)
 
+    dbs.commit()
+    dbs.close()
+
+
+@click.command()
+@click.option('--config', help=_('path to the config file for this tool'))
+@click.argument('lower', type=int)
+@click.argument('upper', type=int)
+def importusers(config, lower, upper):
+    conf = get_config(config)
+    users = {}
+
+    with open('/etc/passwd') as passwd:
+        for line in passwd:
+            line = line.strip()
+            u = line.split(':')
+            if lower <= int(u[2]) <= upper:
+                for i in range(len(u)):
+                    if not u[i].strip():
+                        u[i] = None
+                users[u[0]] = u
+
+    dbs = connect_db(conf)
+    um = UserManager(conf, dbs)
+    gm = GroupManager(conf, dbs)
+
+    with open('/etc/shadow') as shadow:
+        for line in shadow:
+            line.strip()
+            s = line.split(':')
+
+            if s[0] in users.keys():
+                for i in range(len(s)):
+                    if not s[i].strip():
+                        s[i] = None
+                u = users[s[0]]
+                um.adduser(u[0], uid=u[2], gid=u[3], gecos=u[4], homedir=u[5], shell=u[6], password=s[1], lstchg=s[2],
+                           mini=s[3], maxi=s[4], warn=s[5], inact=s[6], expire=s[7], flag=s[8])
+                gm.addgroup(u[0], gid=u[3])
+    dbs.commit()
+    dbs.close()
+
+
+@click.command()
+@click.option('--config', help=_('path to the config file for this tool'))
+@click.argument('lower', type=int)
+@click.argument('upper', type=int)
+def importgroups(config, lower, upper):
+    conf = get_config(config)
+    groups = {}
+
+    with open('/etc/group') as group:
+        for line in group:
+            line = line.strip()
+            g = line.split(':')
+            if lower <= int(g[2]) <= upper:
+                for i in range(len(g)):
+                    if not g[i].strip():
+                        g[i] = None
+                groups[g[0]] = g
+
+    dbs = connect_db(conf)
+    gm = GroupManager(conf, dbs)
+    glm = GroupListManager(conf, dbs)
+
+    with open('/etc/gshadow') as gshadow:
+        for line in gshadow:
+            line.strip()
+            gs = line.split(':')
+
+            if gs[0] in groups.keys():
+                for i in range(len(gs)):
+                    if not gs[i].strip():
+                        gs[i] = None
+                g = groups[gs[0]]
+                gm.addgroup(g[0], gid=g[2], password=gs[1])
+                for user in g[3].split(','):
+                    glm.addgroupuser(username=user, gid=g[2])
     dbs.commit()
     dbs.close()
 

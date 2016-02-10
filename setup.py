@@ -27,6 +27,8 @@ setup(name='PAMMySQLTools',
               'mygroupadd=pammysqltools.scripts:groupadd',
               'mygroupdel=pammysqltools.scripts:groupdel',
               'mygroupmod=pammysqltools.scripts:groupmod',
+              'myimportusers=pammysqltools.scripts:importusers',
+              'myimportgroups=pammysqltools.scripts:importgroups',
           ]
       },
       package_data={

@@ -121,7 +121,8 @@ class UserManager(AbstractManager):
         values.append(username_old)
         sql = "UPDATE `{user}` SET {fields} WHERE `{username}` = %s;".format(user=s_tables.get('user', 'user'),
                                                                              fields=fields,
-                                                                             username=s_fields('username', 'username'))
+                                                                             username=s_fields.get('username',
+                                                                                                   'username'))
 
         with self.dbs.cursor() as cur:
             self.getuserbyusername(username_old)
