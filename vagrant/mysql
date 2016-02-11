@@ -1,0 +1,15 @@
+Name: MySQL authentication
+Default: yes
+Priority: 192
+Auth-Type: Primary
+Auth:
+        [success=end default=ignore]    pam_mysql.so config_file=/etc/pam-mysql.conf
+Account-Type: Primary
+Account:
+        [success=end new_authtok_reqd=done default=ignore]      pam_mysql.so config_file=/etc/pam-mysql.conf
+Session-Type: Additional
+Session:
+        optional                        pam_mysql.so config_file=/etc/pam-mysql.conf
+Password-Type: Primary
+Password:
+        [success=end default=ignore] pam_mysql.so config_file=/etc/pam-mysql.conf

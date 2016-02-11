@@ -355,7 +355,7 @@ def groupadd(force, gid, key, non_unique, password, system, config, group):
 @click.command()
 @click.option('-g', '-gid', type=int, help=_('change the group ID to GID'), metavar=_('GID'))
 @click.option('-n', '-new-name', help=_('change the name to NEW_GROUP'), metavar=_('NEW_GROUP'))
-@click.option('-o', '--non-unique', help=_('allow to use a duplicate (non-unique) GID'))
+@click.option('-o', '--non-unique', is_flag=True, help=_('allow to use a duplicate (non-unique) GID'))
 @click.option('-p', '--password', help=_('change the password to this (encrypted) PASSWORD'), metavar=_('PASSWORD'))
 @click.option('--config', help=_('path to the config file for this tool'), metavar=_('CONF_PATH'))
 @click.argument('group')
@@ -418,10 +418,11 @@ def groupdel(config, group):
 
 
 @click.command()
+@click.option('-i', '--ignore-password', is_flag=True, help=_("Don't import passwords"))
 @click.option('--config', help=_('path to the config file for this tool'))
 @click.argument('lower', type=int)
 @click.argument('upper', type=int)
-def importusers(config, lower, upper):
+def importusers(ignore_password, config, lower, upper):
     conf = get_config(config)
     users = {}
 
@@ -437,7 +438,6 @@ def importusers(config, lower, upper):
 
     dbs = connect_db(conf)
     um = UserManager(conf, dbs)
-    gm = GroupManager(conf, dbs)
 
     with open('/etc/shadow') as shadow:
         for line in shadow:
@@ -449,18 +449,21 @@ def importusers(config, lower, upper):
                     if not s[i].strip():
                         s[i] = None
                 u = users[s[0]]
+                if ignore_password:
+                    s[1] = '!'
+
                 um.adduser(u[0], uid=u[2], gid=u[3], gecos=u[4], homedir=u[5], shell=u[6], password=s[1], lstchg=s[2],
                            mini=s[3], maxi=s[4], warn=s[5], inact=s[6], expire=s[7], flag=s[8])
-                gm.addgroup(u[0], gid=u[3])
     dbs.commit()
     dbs.close()
 
 
 @click.command()
+@click.option('-i', '--ignore-password', is_flag=True, help=_("Don't import passwords"))
 @click.option('--config', help=_('path to the config file for this tool'))
 @click.argument('lower', type=int)
 @click.argument('upper', type=int)
-def importgroups(config, lower, upper):
+def importgroups(ignore_password, config, lower, upper):
     conf = get_config(config)
     groups = {}
 
@@ -488,6 +491,8 @@ def importgroups(config, lower, upper):
                     if not gs[i].strip():
                         gs[i] = None
                 g = groups[gs[0]]
+                if ignore_password:
+                    gs[1] = '!'
                 gm.addgroup(g[0], gid=g[2], password=gs[1])
                 for user in g[3].split(','):
                     glm.addgroupuser(username=user, gid=g[2])
@@ -501,6 +506,8 @@ cli.add_command(userdel)
 cli.add_command(groupadd)
 cli.add_command(groupmod)
 cli.add_command(groupdel)
+cli.add_command(importusers)
+cli.add_command(importgroups)
 
 if __name__ == "__main__":
     cli()
