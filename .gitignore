@@ -67,3 +67,5 @@ build/
 
 #Otto
 .otto*
+
+.vagrant

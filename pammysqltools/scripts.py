@@ -494,8 +494,9 @@ def importgroups(ignore_password, config, lower, upper):
                 if ignore_password:
                     gs[1] = '!'
                 gm.addgroup(g[0], gid=g[2], password=gs[1])
-                for user in g[3].split(','):
-                    glm.addgroupuser(username=user, gid=g[2])
+                if g[3]:
+                    for user in g[3].split(','):
+                        glm.addgroupuser(username=user, gid=g[2])
     dbs.commit()
     dbs.close()
 
