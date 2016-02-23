@@ -81,7 +81,7 @@ class UserManagerTests(ManagerTests):
         self.assertDictEqual(user, self.testuser)
 
         with self.assertRaises(KeyError):
-            self.um.getuserbyusername(self.testuser2['uid'])
+            self.um.getuserbyuid(self.testuser2['uid'])
 
     def test_getuserbyusername(self):
         self.um.adduser(**self.testuser)
