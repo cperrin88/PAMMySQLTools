@@ -1,5 +1,6 @@
 language: python
 python:
+- '2.7'
 - '3.3'
 - '3.4'
 - '3.5'
@@ -12,10 +13,10 @@ services: mysql
 
 before_script: mysql -e 'CREATE DATABASE IF NOT EXISTS auth_test;'
 
-script: python3 setup.py test
+script: python setup.py test
 
 before_deploy:
-  - python3 setup.py compile_catalog -d pammysqltools/locales
+  - python setup.py compile_catalog -d pammysqltools/locales
 
 deploy:
   provider: pypi

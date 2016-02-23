@@ -18,7 +18,7 @@ setup(name='PAMMySQLTools',
       long_description=readme(),
       test_suite='tests',
       setup_requires=['setuptools-git-version', 'babel'],
-      install_requires=['pymysql', 'click'],
+      install_requires=['pymysql', 'click', 'future', 'six', 'configparser>=3.5.0b2'],
       entry_points={
           'console_scripts': [
               'myuseradd=pammysqltools.scripts:useradd',
