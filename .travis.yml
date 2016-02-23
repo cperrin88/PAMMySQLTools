@@ -11,6 +11,8 @@ cache: pip
 
 services: mysql
 
+install: pip install . --upgrade
+
 before_script: mysql -e 'CREATE DATABASE IF NOT EXISTS auth_test;'
 
 script: python setup.py test
