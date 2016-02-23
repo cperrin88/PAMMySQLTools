@@ -63,8 +63,6 @@ target/
 
 .ropeproject/
 
-build/
-
 #Otto
 .otto*
 

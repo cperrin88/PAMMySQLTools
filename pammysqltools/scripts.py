@@ -1,14 +1,26 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from builtins import int
+from builtins import open
+from builtins import range
+from builtins import str
+from future import standard_library
+
+standard_library.install_aliases()
 import datetime
 import gettext
+import grp
 import os.path
 import pwd
 import shutil
 import syslog
+
+import click
 # noinspection PyUnresolvedReferences
 import __main__
-import click
-import grp
-
 from pammysqltools.helpers import get_config, find_new_uid, find_new_gid, connect_db, get_useradd_conf, get_defs, \
     create_home, get_gid, get_uid
 from pammysqltools.manager import UserManager, GroupListManager, GroupManager
@@ -289,7 +301,7 @@ def usermod(comment, home_dir, expiredate, inactive, gid, groups, append, login_
                 except KeyError:
                     print(_("Warning: Can't find group {group}").format(group=group))
         else:
-            db_groups = glm.getgroupsforuser(login)
+            db_groups = glm.getgroupsforusername(login)
             for group in groups:
                 gid = get_gid(group)
                 if gid not in db_groups:
