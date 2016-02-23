@@ -12,8 +12,8 @@ cache: pip
 services: mysql
 
 install:
-  - pip install --user --upgrade .
-  - pip install --user --upgrade coveralls coverage
+  - pip install --upgrade .
+  - pip install --upgrade coveralls coverage
 
 before_script: mysql -e 'CREATE DATABASE IF NOT EXISTS auth_test;'
 
