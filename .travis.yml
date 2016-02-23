@@ -11,12 +11,19 @@ cache: pip
 
 services: mysql
 
+install:
+  - pip install --upgrade .
+  - pip install --upgrade coveralls coverage
+
 before_script: mysql -e 'CREATE DATABASE IF NOT EXISTS auth_test;'
 
-script: python setup.py test
+script: coverage run --source=pammysqltools setup.py test
 
 before_deploy:
-  - python setup.py compile_catalog -d pammysqltools/locales
+  - setup.py compile_catalog -d pammysqltools/locales
+
+after_success:
+  - coveralls
 
 deploy:
   provider: pypi

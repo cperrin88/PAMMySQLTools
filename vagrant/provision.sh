@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set +x
+
 sudo echo "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty main restricted universe multiverse" > /etc/apt/sources.list
 sudo echo "deb mirror://mirrors.ubuntu.com/mirrors.txt trusty-updates main restricted universe multiverse" >> /etc/apt/sources.list
 sudo DEBIAN_FRONTEND=noninteractive apt-get update
@@ -29,3 +31,9 @@ sudo cp vagrant/mysql /usr/share/pam-configs/mysql
 sudo cp vagrant/nsswitch.conf /etc/nsswitch.conf
 
 sudo pam-auth-update --package
+
+sudo pip install pip setuptools unittest --upgrade
+sudo pip install -e . --upgrade
+
+sudo pip3 install pip setuptools unittest --upgrade
+sudo pip3 install -e . --upgrade
