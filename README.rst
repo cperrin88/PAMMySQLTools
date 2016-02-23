@@ -1,8 +1,10 @@
 PAMMySQL Tools
 ==============
 
-.. image:: https://travis-ci.org/cperrin88/PAMMySQLTools.svg
+.. image:: https://travis-ci.org/cperrin88/PAMMySQLTools.svg?branch=master
    :target: https://travis-ci.org/cperrin88/PAMMySQLTools
+.. image:: https://coveralls.io/repos/github/cperrin88/PAMMySQLTools/badge.svg?branch=master
+   :target: https://coveralls.io/github/cperrin88/PAMMySQLTools?branch=master 
 
 PAMMySQL Tools ist a suite to manage users for pam_mysql and libnss-mysql. It tries to mimic the behaviours of the linux tools user{add,mod,del} and group{add,mod,del}
 
