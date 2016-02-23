@@ -60,8 +60,11 @@ class UserManagerTests(ManagerTests):
                 u'maxi': 2, u'warn': 3, u'flag': 6, u'gid': 1000, u'gecos': 'Testuser', u'expire': 5, u'inact': 4,
                 u'password': 'ABCD', u'uid': 1000}
     testuser2 = {u'username': 'testuser2', u'mini': 8, u'shell': '/bin/bash', u'homedir': '/home/testuser2',
-                 u'lstchg': 7, u'maxi': 9, u'warn': 10, u'flag': 13, u'gid': 1000, u'gecos': 'Testuser2', u'expire': 12,
+                 u'lstchg': 7, u'maxi': 9, u'warn': 10, u'flag': 13, u'gid': 1001, u'gecos': 'Testuser2', u'expire': 12,
                  u'inact': 11, u'password': 'EFGH', u'uid': 1001}
+    testuser3 = {u'username': 'testuser3', u'mini': 15, u'shell': '/bin/zsh', u'homedir': '/home/testuser3',
+                 u'lstchg': 14, u'maxi': 16, u'warn': 17, u'flag': 20, u'gid': 1000, u'gecos': 'Testuser3',
+                 u'expire': 19, u'inact': 18, u'password': 'EFGH', u'uid': 1001}
 
     @classmethod
     def setUpClass(cls):
@@ -124,6 +127,20 @@ class UserManagerTests(ManagerTests):
         with self.assertRaises(KeyError):
             self.um.getuserbyuid(self.testuser['uid'])
 
+    def test_modallgid(self):
+        self.um.adduser(**self.testuser)
+        self.um.adduser(**self.testuser3)
+
+        self.um.modallgid(self.testuser[u'gid'], self.testuser2[u'gid'])
+
+        user = self.um.getuserbyusername(self.testuser['username'])
+        del user['id']
+        self.assertEqual(user[u'gid'], self.testuser2[u'gid'])
+
+        user = self.um.getuserbyusername(self.testuser3['username'])
+        del user['id']
+        self.assertEqual(user[u'gid'], self.testuser2[u'gid'])
+
 
 class GroupManagerTests(ManagerTests):
     testgroup = {u'name': u'testgroup', u'gid': 1000, u'password': u'ABCD'}
@@ -175,7 +192,7 @@ class GroupManagerTests(ManagerTests):
         del group['id']
         self.assertDictEqual(group, self.testgroup2)
 
-    def test_moduser(self):
+    def test_modgroup(self):
         self.gm.addgroup(**self.testgroup)
 
         self.gm.modgroup(self.testgroup['name'], **self.testgroup2)
@@ -262,3 +279,7 @@ class GroupListManagerTests(ManagerTests):
 
         self.assertNotIn(self.testgrouplist3[u'gid'],
                          self.glm.getgroupsforusername(self.testgrouplist3[u'username']))
+
+
+if __name__ == '__main__':
+    unittest.main()
