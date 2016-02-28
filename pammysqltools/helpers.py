@@ -43,7 +43,7 @@ def get_gid(group):
         return int(group)
     except ValueError:
         gr = grp.getgrnam(group)
-        return int(gr.gr_gid)
+        return gr.gr_gid
 
 
 def get_uid(user):
@@ -51,7 +51,7 @@ def get_uid(user):
         return int(user)
     except ValueError:
         gr = pwd.getpwnam(user)
-        return int(gr.pw_uid)
+        return gr.pw_uid
 
 
 def get_config(path=None):
