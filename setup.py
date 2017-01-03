@@ -1,9 +1,10 @@
 from setuptools import setup, find_packages
 
-
-def readme():
-    with open('README.rst') as f:
-        return f.read()
+try:
+    from pypandoc import convert
+    read_md = lambda f: convert(f, 'rst')
+except ImportError:
+    read_md = lambda f: open(f, 'r').read()
 
 
 setup(name='PAMMySQLTools',
@@ -15,9 +16,9 @@ setup(name='PAMMySQLTools',
       url='https://github.com/cperrin88/PAMMySQLTools',
       license='MIT',
       packages=find_packages(),
-      long_description=readme(),
+      long_description=read_md('README.md'),
       test_suite='tests',
-      setup_requires=['setuptools-git-version', 'babel'],
+      setup_requires=['setuptools-git-version', 'babel', 'pypandoc'],
       install_requires=['pymysql', 'click', 'future', 'six', 'configparser>=3.5.0b2'],
       entry_points={
           'console_scripts': [

@@ -7,13 +7,20 @@ python:
 - '3.5-dev'
 - 'nightly'
 
+sudo: false
+
 cache: pip
 
 services: mysql
 
+addons:
+  apt:
+    packages:
+      - pandoc
+
 install:
+  - pip install --upgrade coveralls coverage pypandoc
   - pip install --upgrade .
-  - pip install --upgrade coveralls coverage
 
 before_script: mysql -e 'CREATE DATABASE IF NOT EXISTS auth_test;'
 

@@ -1,39 +1,41 @@
 PAMMySQL Tools
 ==============
 
-.. image:: https://travis-ci.org/cperrin88/PAMMySQLTools.svg?branch=master
-   :target: https://travis-ci.org/cperrin88/PAMMySQLTools
-.. image:: https://coveralls.io/repos/github/cperrin88/PAMMySQLTools/badge.svg?branch=master
-   :target: https://coveralls.io/github/cperrin88/PAMMySQLTools?branch=master 
+[![build](https://travis-ci.org/cperrin88/PAMMySQLTools.svg?branch=master)](https://travis-ci.org/cperrin88/PAMMySQLTools) [![coverage](https://coveralls.io/repos/github/cperrin88/PAMMySQLTools/badge.svg?branch=master)](https://coveralls.io/github/cperrin88/PAMMySQLTools?branch=master)
 
-PAMMySQL Tools ist a suite to manage users for pam_mysql and libnss-mysql. It tries to mimic the behaviours of the linux tools user{add,mod,del} and group{add,mod,del}
+PAMMySQL Tools ist a suite to manage users for pam\_mysql and
+libnss-mysql. It tries to mimic the behaviours of the linux tools
+user{add,mod,del} and group{add,mod,del}
 
 Installation
 ------------
 
-To install simply run::
+To install simply run:
 
     pip install PAMMySQLTools
 
 This will install the scripts:
- - myuseradd
- - myusermod
- - myuserdel
- - mygroupadd
- - mygroupmod
- - mygroupdel
+
+ -   myuseradd
+ -   myusermod
+ -   myuserdel
+ -   mygroupadd
+ -   mygroupmod
+ -   mygroupdel
 
 Configuration
 -------------
 
-In the directory :code:`docs` you can find an example config with all everything set. If you don't set a value, the tools will assume the values in the original config as default values.
+In the directory `docs` you can find an example config with
+all everything set. If you don't set a value, the tools will assume the
+values in the original config as default values.
 
 Running the Software
 --------------------
 
 To display help for any of the scripts, start with the --help parameter
 
-For example::
+For example:
 
     $ myuseradd --help
     Usage: myuseradd [OPTIONS] LOGIN
