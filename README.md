@@ -1,7 +1,9 @@
 PAMMySQL Tools
 ==============
 
-[![build](https://travis-ci.org/cperrin88/PAMMySQLTools.svg?branch=master)](https://travis-ci.org/cperrin88/PAMMySQLTools) [![coverage](https://coveralls.io/repos/github/cperrin88/PAMMySQLTools/badge.svg?branch=master)](https://coveralls.io/github/cperrin88/PAMMySQLTools?branch=master)
+[![build](https://travis-ci.org/cperrin88/PAMMySQLTools.svg?branch=master)](https://travis-ci.org/cperrin88/PAMMySQLTools)
+[![coverage](https://coveralls.io/repos/github/cperrin88/PAMMySQLTools/badge.svg?branch=master)](https://coveralls.io/github/cperrin88/PAMMySQLTools?branch=master)
+[![Gratipay User](https://img.shields.io/gratipay/user/cperrin88.svg)](https://gratipay.com/~cperrin88/)
 
 PAMMySQL Tools ist a suite to manage users for pam\_mysql and
 libnss-mysql. It tries to mimic the behaviours of the linux tools
