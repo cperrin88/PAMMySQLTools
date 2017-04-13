@@ -5,7 +5,7 @@ PAMMySQL Tools
 [![coverage](https://coveralls.io/repos/github/cperrin88/PAMMySQLTools/badge.svg?branch=master)](https://coveralls.io/github/cperrin88/PAMMySQLTools?branch=master)
 [![Gratipay User](https://img.shields.io/gratipay/user/cperrin88.svg)](https://gratipay.com/~cperrin88/)
 
-PAMMySQL Tools ist a suite to manage users for pam\_mysql and
+PAMMySQL Tools is a suite to manage users for pam\_mysql and
 libnss-mysql. It tries to mimic the behaviours of the linux tools
 user{add,mod,del} and group{add,mod,del}
 
