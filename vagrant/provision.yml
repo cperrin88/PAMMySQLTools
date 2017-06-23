@@ -1,0 +1,59 @@
+---
+ - hosts: all
+   become: yes
+   tasks:
+    - name: install packages
+      apt:
+        name: "{{ item }}"
+        state: installed
+        cache_valid_time: 86400
+      with_items:
+        - mysql-server
+        - python3-pip
+        - python3-setuptools
+        - python3-dev
+        - build-essential
+        - libpam-mysql
+        - libnss-mysql-bg
+        - pandoc
+        - git
+        - python-mysqldb
+
+    - name: deploy configs
+      copy:
+        src: "{{ item }}"
+        dest: "/{{ item }}"
+      with_items:
+        - etc/libnss-mysql.cfg
+        - etc/libnss-mysql-root.cfg
+        - etc/pam-mysql.conf
+        - etc/nsswitch.conf
+        - usr/share/pam-configs/mysql
+
+    - name: update pam
+      command: pam-auth-update --package
+
+    - name: install pip packages
+      pip:
+        name: "{{ item }}"
+        state: latest
+        executable: pip3
+      with_items:
+        - setuptools
+
+    - name: install app
+      pip:
+        name: /vagrant
+        editable: true
+        executable: pip3
+
+    - name: setup mysql auth_test db
+      mysql_db:
+        name: auth_test
+        state: present
+
+    - name: setup mysql auth db
+      mysql_db:
+        name: auth
+        state: import
+        target: /vagrant/vagrant/files/db.sql

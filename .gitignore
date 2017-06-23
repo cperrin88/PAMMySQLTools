@@ -67,3 +67,5 @@ target/
 .otto*
 
 .vagrant
+
+*.retry

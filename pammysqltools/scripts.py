@@ -1,15 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
-from builtins import int
-from builtins import open
-from builtins import range
-from builtins import str
-from future import standard_library
-
-standard_library.install_aliases()
 import datetime
 import gettext
 import grp
@@ -26,10 +14,10 @@ from pammysqltools.helpers import get_config, find_new_uid, find_new_gid, connec
 from pammysqltools.manager import UserManager, GroupListManager, GroupManager
 from pammysqltools.validators import keyvalue, date, list
 
-progname = os.path.basename(__main__.__file__)
+PROGNAME = os.path.basename(__main__.__file__)
 
 gettext.install('messages', os.path.join(os.path.dirname(os.path.realpath(__file__)), "locales"))
-syslog.openlog(progname)
+syslog.openlog(PROGNAME)
 
 # The reference date for the timestamps
 REFDATE = datetime.date(1970, 1, 1)
