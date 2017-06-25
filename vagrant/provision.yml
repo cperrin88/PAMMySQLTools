@@ -9,6 +9,7 @@
         cache_valid_time: 86400
       with_items:
         - mysql-server
+        - libmysqlclient-dev
         - python3-pip
         - python3-setuptools
         - python3-dev

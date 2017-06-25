@@ -7,8 +7,11 @@ import syslog
 # noinspection PyUnresolvedReferences
 import __main__
 import pymysql
+import sqlalchemy
 
 progname = os.path.basename(__main__.__file__)
+
+global CONF
 
 
 def create_home(path, skel, uid, gid):
@@ -48,7 +51,7 @@ def get_config(path=None):
                 os.path.expanduser('~/.pam_mysql_manager.conf')]
     conf = configparser.ConfigParser()
     conf.read(path)
-
+    CONF = conf
     return conf
 
 
@@ -100,7 +103,7 @@ def find_new_uid(sysuser, preferred_uid=None):
         uid_max = int(defs.get("UID_MAX", 60000))
         if uid_max < uid_min:
             ValueError(_('{progname}: Invalid configuration: UID_MIN ({uid_min}), UID_MAX ({uid_max})').format(
-                    progname=progname, uid_min=uid_min, uid_max=uid_max))
+                progname=progname, uid_min=uid_min, uid_max=uid_max))
     else:
         uid_min = int(defs.get("SYS_UID_MIN", 101))
         uid_max = int(defs.get("UID_MIN", 1000))
@@ -108,10 +111,10 @@ def find_new_uid(sysuser, preferred_uid=None):
 
         if uid_max < uid_min:
             raise ValueError(_(
-                    '{progname}: Invalid configuration: SYS_UID_MIN ({sys_uid_min}), UID_MIN ({uid_min}), SYS_UID_MAX '
-                    '({sys_uid_max})').format(progname=progname, sys_uid_min=uid_min,
-                                              uid_min=int(defs.get("UID_MIN", 1000)),
-                                              sys_uid_max=uid_max))
+                '{progname}: Invalid configuration: SYS_UID_MIN ({sys_uid_min}), UID_MIN ({uid_min}), SYS_UID_MAX '
+                '({sys_uid_max})').format(progname=progname, sys_uid_min=uid_min,
+                                          uid_min=int(defs.get("UID_MIN", 1000)),
+                                          sys_uid_max=uid_max))
 
     if preferred_uid and uid_min < preferred_uid < uid_max:
         try:
@@ -177,21 +180,12 @@ def connect_db(config, mysql_user=None, mysql_pass=None, mysql_host=None, mysql_
     else:
         section = config['database']
 
-    if mysql_user is None:
-        mysql_user = section.get('user', 'root')
-    if mysql_pass is None:
-        mysql_pass = section.get('password', '')
-    if mysql_host is None:
-        mysql_host = section.get('host', 'localhost')
-    if mysql_port is None:
-        mysql_port = int(section.get('port', 3306))
-    if mysql_db is None:
-        mysql_db = section.get('database', 'auth')
+    mysql_user = mysql_user or section.get('user', 'root')
+    mysql_pass = mysql_pass or section.get('password', '')
+    mysql_host = mysql_host or section.get('host', 'localhost')
+    mysql_port = mysql_port or int(section.get('port', 3306))
+    mysql_db = mysql_db or section.get('database', 'auth')
 
-    dbs = pymysql.connect(host=mysql_host,
-                          user=mysql_user,
-                          password=mysql_pass,
-                          db=mysql_db,
-                          port=mysql_port)
-
+    dbs = sqlalchemy.create_engine("mysql://{user}:{password}@{host}:{port}/{db}".format(
+        user=mysql_user, password=mysql_pass, host=mysql_host, port=mysql_port, db=mysql_db))
     return dbs

@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 try:
     from pypandoc import convert
+
     read_md = lambda f: convert(f, 'rst')
 except ImportError:
     read_md = lambda f: open(f, 'r').read()
-
 
 setup(name='PAMMySQLTools',
       version_format='{tag}',
@@ -19,7 +19,7 @@ setup(name='PAMMySQLTools',
       long_description=read_md('README.md'),
       test_suite='tests',
       setup_requires=['setuptools-git-version', 'babel', 'pypandoc'],
-      install_requires=['pymysql', 'click', 'future', 'six', 'configparser~=3.5.0','python-sql'],
+      install_requires=['click', 'future', 'six', 'configparser~=3.5.0', 'sqlalchemy','mysqlclient'],
       entry_points={
           'console_scripts': [
               'myuseradd=pammysqltools.scripts:useradd',

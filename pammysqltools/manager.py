@@ -1,4 +1,10 @@
 from pymysql.cursors import DictCursor
+from pypika import MySQLQuery, Table
+
+from sqlalchemy import Table, Column, String, MetaData, BigInteger, Integer
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 
 class AbstractManager(object):
@@ -14,6 +20,13 @@ class AbstractManager(object):
     def __init__(self, config, dbs):
         self.config = config
         self.dbs = dbs
+        self.session = sessionmaker(bind=dbs)
+
+    def get_session(self):
+        return self.session
+
+    def set_session(self, session):
+        self.session = session
 
 
 class UserManager(AbstractManager):
@@ -31,11 +44,16 @@ class UserManager(AbstractManager):
         self.table = self.config.get('tables', 'user', fallback='user')
 
     def getuserbyuid(self, uid):
-        sql = "SELECT * FROM %s WHERE `%s`=%%s LIMIT 1" % (
-            self.table, self.config.get('fields', 'uid', fallback='uid'))
+        user = Table(self.table)
+        query = MySQLQuery.from_(user).select(user.star).where(
+            getattr(user, self.config.get('fields', 'uid', fallback='uid')) == uid).limit(1)
+
+        # query =.select().where =
+
+        print(str(query))
 
         with self.dbs.cursor(cursor=DictCursor) as cur:
-            cur.execute(sql, uid)
+            cur.execute(str(query))
             result = cur.fetchone()
             if not result:
                 raise KeyError("No user with UID %s" % uid)
@@ -47,8 +65,11 @@ class UserManager(AbstractManager):
         sql = "SELECT * FROM `{user}` WHERE `{username}`=%s LIMIT 1".format(
             user=self.table,
             username=self.config.get('fields', 'username', fallback='username'))
+        user = Table(self.table)
+        query = MySQLQuery.from_(user).select(user.star).where(
+            getattr(user, self.config.get('fields', 'username', fallback='username')) == username).limit(1)
         with self.dbs.cursor(cursor=DictCursor) as cur:
-            cur.execute(sql, username)
+            cur.execute(str(query))
             result = cur.fetchone()
             if not result:
                 raise KeyError("No user with username %s" % username)
@@ -57,23 +78,23 @@ class UserManager(AbstractManager):
 
     def adduser(self, username, gid=None, uid=None, gecos=None, homedir=None, shell=None, password=None,
                 lstchg=None, mini=None, maxi=None, warn=None, inact=None, expire=None, flag=None):
-        l = locals()
+        loc = locals()
 
-        fields = ""
+        fields = list()
         values = list()
-
-        for k in l:
-            if k == 'self':
+        # Aggregate list of used fields and values from the parameters
+        for key in loc:
+            if key == 'self':
                 continue
-            if l[k] is not None:
-                fields += ("`%s` = %%s, " % (self.config.get('fields', k, fallback=k)))
-                values.append(l[k])
-        fields = fields[:-2]
+            if loc[key] is not None:
+                fields.append(key)
+                values.append(loc[key])
 
-        sql = "INSERT INTO `%s` SET %s;" % (self.table, fields)
+        user = Table(self.table)
+        query = MySQLQuery.into(user).columns(*fields).insert(values)
 
         with self.dbs.cursor() as cur:
-            cur.execute(sql, values)
+            cur.execute(str(query))
 
     def deluser(self, username):
         args = (
@@ -240,6 +261,26 @@ class GroupManager(AbstractManager):
     :type dbs: pymysql.Connection
     """
 
+    def __init__(self, config, dbs):
+        super(GroupManager, self).__init__(config, dbs)
+
+        metadata = MetaData()
+
+        Table(config.get('tables', 'groups', fallback='groups'), metadata,
+              Column('id', BigInteger, primary_key=True),
+              Column(config.get('fields', 'name', fallback='name'), String(255), key="name",
+                     nullable=False),
+              Column(config.get('fields', 'gid', fallback='gid'), Integer, key="gid", nullable=False),
+              Column(config.get('fields', 'password', fallback='password'), String(255), key="password",
+                     nullable=False)
+              )
+        Base = automap_base(metadata=metadata)
+        Base.prepare()
+        self.group_class = Base.classes.groups
+
+    def get_table(self):
+        return self.group_class
+
     def getgroupbyname(self, group):
         """
         Returns the group for the given name
@@ -250,14 +291,10 @@ class GroupManager(AbstractManager):
         :rtype: dict
         """
 
-        sql = "SELECT * FROM `{group}` WHERE `{name}`=%s".format(
-            group=self.config.get('tables', 'group', fallback='group'),
-            name=self.config.get('fields', 'name', fallback='name'))
-        with self.dbs.cursor(cursor=DictCursor) as cur:
-            cur.execute(sql, group)
-            result = cur.fetchone()
-            if not result:
-                raise KeyError('Group "{name}" not in Database'.format(name=group))
+        result = self.session.query(self.group_class).filter(self.group_class.name == group).first()
+
+        if not result:
+            raise KeyError('Group "{name}" not in Database'.format(name=group))
         return result
 
     def getgroupbygid(self, gid):
@@ -270,64 +307,29 @@ class GroupManager(AbstractManager):
         :rtype: dict
         """
 
-        sql = "SELECT * FROM `{group}` WHERE `{gid}`=%s".format(
-            group=self.config.get('tables', 'group', fallback='group'),
-            gid=self.config.get('fields', 'gid', fallback='gid'))
-        with self.dbs.cursor(cursor=DictCursor) as cur:
-            cur.execute(sql, gid)
-            result = cur.fetchone()
-            if not result:
-                raise KeyError('Group "{gid}" not in Database'.format(gid=gid))
+        result = self.session.query(self.group_class).filter(self.group_class.gid == gid).first()
+
+        if not result:
+            raise KeyError('Group "{gid}" not in Database'.format(gid=gid))
         return result
 
     def addgroup(self, name, gid, password=None):
-        l = locals()
+        l = locals().copy()
 
-        fields = ""
-        values = list()
+        del l['self']
+        l = dict((k, v) for k, v in l.items() if v)
 
-        for k in l:
-            if k == 'self':
-                continue
-            if l[k] is not None:
-                fields += ("`%s` = %%s, " % (self.config.get('fields', k, fallback=k)))
-                values.append(l[k])
-        fields = fields[:-2]
-
-        sql = "INSERT INTO `%s` SET %s;" % (self.config.get('tables', 'group', fallback='group'), fields)
-
-        with self.dbs.cursor() as cur:
-            cur.execute(sql, values)
+        user = self.group_class(**l)
+        self.session.add(user)
 
     def delgroup(self, gid):
-
-        args = (self.config.get('tables', 'group', fallback='group'), self.config.get('fields', 'gid', fallback='gid'))
-
-        sql_delete = "DELETE FROM `%s` WHERE `%s`=%%s" % args
-
-        with self.dbs.cursor() as cur:
-            self.getgroupbygid(gid)
-            cur.execute(sql_delete, gid)
+        group = self.session.query(self.group_class).filter(self.group_class.gid == gid).first()
+        self.session.delete(group)
 
     def modgroup(self, name_old, name, gid, password):
-        l = locals()
-        fields = ""
-        values = list()
+        l = locals().copy()
 
-        for k in l:
-            if l[k] is not None and k != 'self' and k != 'name_old':
-                fields += ("`%s` = %%s, " % (self.config.get('fields', k, fallback=k)))
-                values.append(l[k])
-        fields = fields[:-2]
-        if not values:
-            return
-
-        values.append(name_old)
-        sql = "UPDATE `{group}` SET {fields} WHERE `{name}` = %s;".format(
-            group=self.config.get('tables', 'group', fallback='group'),
-            fields=fields,
-            name=self.config.get('fields', 'name', fallback='name'))
-
-        with self.dbs.cursor() as cur:
-            self.getgroupbyname(name_old)
-            cur.execute(sql, values)
+        group = self.session.query(self.group_class).filter(self.group_class.name == name_old).first()
+        for key in l:
+            if key is not self and l[key]:
+                setattr(group, key, l[key])

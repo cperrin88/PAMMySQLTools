@@ -1,22 +1,11 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
-# noinspection PyUnresolvedReferences
-from backports.configparser import ConfigParser
 import os
 import unittest
-import warnings
-from builtins import int
-from builtins import open
+from configparser import ConfigParser
 
-import pymysql
-from future import standard_library
+from sqlalchemy.orm import sessionmaker
 
+from pammysqltools.helpers import connect_db
 from pammysqltools.manager import UserManager, GroupManager, GroupListManager
-
-standard_library.install_aliases()
 
 
 class ManagerTests(unittest.TestCase):
@@ -26,33 +15,12 @@ class ManagerTests(unittest.TestCase):
         cls.config.read([r'pam_mysql_manager-test.conf', r'/etc/pam_mysql_manager-test.conf',
                          os.path.expanduser('~/.pam_mysql_manager-test.conf')])
 
-        mysql_user = os.getenv("PAMMYSQL_TEST_MYSQL_USER", cls.config.get('database', 'user', fallback='root'))
-        mysql_pass = os.getenv("PAMMYSQL_TEST_MYSQL_PASS", cls.config.get('database', 'password', fallback=''))
-        mysql_host = os.getenv("PAMMYSQL_TEST_MYSQL_HOST", cls.config.get('database', 'host', fallback='localhost'))
-        mysql_port = int(os.getenv("PAMMYSQL_TEST_MYSQL_PORT", cls.config.get('database', 'port', fallback="3306")))
-        mysql_db = os.getenv("PAMMYSQL_TEST_MYSQL_DB", cls.config.get('database', 'database', fallback='auth_test'))
-
-        cls.dbs = pymysql.connect(host=mysql_host,
-                                  user=mysql_user,
-                                  password=mysql_pass,
-                                  db=mysql_db,
-                                  port=mysql_port)
+        cls.dbs = connect_db(cls.config, os.getenv("PAMMYSQL_TEST_MYSQL_USER"), os.getenv("PAMMYSQL_TEST_MYSQL_PASS"),
+                             os.getenv("PAMMYSQL_TEST_MYSQL_HOST"), int(os.getenv("PAMMYSQL_TEST_MYSQL_PORT", 0)),
+                             os.getenv("PAMMYSQL_TEST_MYSQL_DB"))
 
         with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "testdb.sql"), "r") as f:
             cls.sql = f.read()
-
-    def setUp(self):
-        with self.dbs.cursor() as cur:
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                cur.execute(self.sql)
-
-    def tearDown(self):
-        self.dbs.rollback()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.dbs.close()
 
 
 class UserManagerTests(ManagerTests):
@@ -150,6 +118,14 @@ class GroupManagerTests(ManagerTests):
     def setUpClass(cls):
         ManagerTests.setUpClass()
         cls.gm = GroupManager(cls.config, cls.dbs)
+        cls.gm.set_session(sessionmaker(bind=cls.dbs, autocommit=False)())
+        cls.gm.get_table().metadata.create_all(cls.dbs)
+
+    def setUp(self):
+        self.gm.get_session().begin_nested()
+
+    def tearDown(self):
+        self.gm.get_session().rollback()
 
     def test_groupadd(self):
         self.gm.addgroup(**self.testgroup)
@@ -158,9 +134,8 @@ class GroupManagerTests(ManagerTests):
         self.gm.addgroup(**self.testgroup)
         group = self.gm.getgroupbygid(self.testgroup['gid'])
 
-        del group['id']
-
-        self.assertDictEqual(group, self.testgroup)
+        group = group.__dict__
+        self.assertTrue(group.items() >= self.testgroup.items())
 
         with self.assertRaises(KeyError):
             self.gm.getgroupbygid(self.testgroup2['gid'])
@@ -168,10 +143,10 @@ class GroupManagerTests(ManagerTests):
     def test_getgroupbyname(self):
         self.gm.addgroup(**self.testgroup)
         group = self.gm.getgroupbyname(self.testgroup['name'])
-
-        del group['id']
-
-        self.assertDictEqual(group, self.testgroup)
+        group = group.__dict__.copy()
+        # del group['_sa_instance_state']
+        # del group['id']
+        self.assertTrue(group.items() >= self.testgroup.items())
 
         with self.assertRaises(KeyError):
             self.gm.getgroupbyname(self.testgroup2['name'])
@@ -188,9 +163,9 @@ class GroupManagerTests(ManagerTests):
         with self.assertRaises(KeyError):
             self.gm.getgroupbyname(self.testgroup['name'])
 
-        group = self.gm.getgroupbygid(self.testgroup2['gid'])
-        del group['id']
-        self.assertDictEqual(group, self.testgroup2)
+        group = self.gm.getgroupbygid(self.testgroup2['gid']).__dict__
+
+        self.assertTrue(group.items() >= self.testgroup2.items())
 
     def test_modgroup(self):
         self.gm.addgroup(**self.testgroup)
@@ -203,13 +178,11 @@ class GroupManagerTests(ManagerTests):
         with self.assertRaises(KeyError):
             self.gm.getgroupbyname(self.testgroup['name'])
 
-        group = self.gm.getgroupbygid(self.testgroup2['gid'])
-        del group['id']
-        self.assertDictEqual(group, self.testgroup2)
+        group = self.gm.getgroupbygid(self.testgroup2['gid']).__dict__
+        self.assertTrue(group.items() >= self.testgroup2.items())
 
-        group = self.gm.getgroupbyname(self.testgroup2['name'])
-        del group['id']
-        self.assertDictEqual(group, self.testgroup2)
+        group = self.gm.getgroupbyname(self.testgroup2['name']).__dict__
+        self.assertTrue(group.items() >= self.testgroup2.items())
 
 
 class GroupListManagerTests(ManagerTests):
